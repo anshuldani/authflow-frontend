@@ -3,42 +3,84 @@
 @theme inline {
   --font-display: 'Playfair Display', Georgia, serif;
   --font-sans: 'Inter', system-ui, sans-serif;
-  --color-brand-dark: #0B0F1A;
-  --color-brand-darker: #060810;
-  --color-brand-blue: #1B4FD8;
-  --color-brand-blue-light: #7BA3FF;
-  --color-brand-blue-faint: #EBF0FF;
-  --color-brand-blue-mid: #3D6AE8;
-  --color-brand-card-dark: #111827;
-  --color-brand-card-deep: #141E2E;
-  --color-brand-off: #F0F4F8;
-  --color-brand-muted: #6B7A9A;
-  --color-brand-dim: #4A5A7A;
+
+  /* Healthcare color palette — light, clean, clinical */
+  --color-bg:              #F4F7FB;
+  --color-surface:         #FFFFFF;
+  --color-surface-raised:  #FFFFFF;
+  --color-border:          #E2E8F0;
+  --color-border-soft:     #EEF2F7;
+
+  --color-primary:         #1A56DB;
+  --color-primary-hover:   #1648C2;
+  --color-primary-light:   #EBF2FF;
+  --color-primary-mid:     #3B6FE8;
+
+  --color-success:         #16A34A;
+  --color-success-light:   #DCFCE7;
+  --color-warning:         #D97706;
+  --color-warning-light:   #FEF3C7;
+  --color-danger:          #DC2626;
+  --color-danger-light:    #FEE2E2;
+  --color-purple:          #7C3AED;
+  --color-purple-light:    #EDE9FE;
+
+  --color-text:            #0F172A;
+  --color-text-secondary:  #475569;
+  --color-text-muted:      #94A3B8;
+  --color-text-on-primary: #FFFFFF;
+
+  /* Legacy aliases (kept for any components still using them) */
+  --color-brand-dark:        #0F172A;
+  --color-brand-blue:        #1A56DB;
+  --color-brand-blue-light:  #93B4F5;
+  --color-brand-blue-faint:  #EBF2FF;
+  --color-brand-blue-mid:    #3B6FE8;
+  --color-brand-card-dark:   #FFFFFF;
+  --color-brand-card-deep:   #F4F7FB;
+  --color-brand-off:         #F4F7FB;
+  --color-brand-muted:       #475569;
+  --color-brand-dim:         #94A3B8;
 }
 
 :root {
-  --bg-dark: #0B0F1A;
-  --bg-darker: #060810;
-  --bg-card-dark: #111827;
-  --bg-card-deep: #141E2E;
-  --blue-primary: #1B4FD8;
-  --blue-light: #7BA3FF;
-  --blue-mid: #3D6AE8;
-  --text-muted: #6B7A9A;
-  --text-dim: #4A5A7A;
-  --text-deep: #2A3550;
-  --border-dark: rgba(255, 255, 255, 0.07);
+  --bg:            #F4F7FB;
+  --surface:       #FFFFFF;
+  --border:        #E2E8F0;
+  --primary:       #1A56DB;
+  --primary-hover: #1648C2;
+  --primary-light: #EBF2FF;
+  --text:          #0F172A;
+  --text-secondary:#475569;
+  --text-muted:    #94A3B8;
+  --shadow-sm:     0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:     0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  background: var(--bg-dark);
-  color: #ffffff;
+  background: var(--bg);
+  color: var(--text);
   font-family: 'Inter', system-ui, sans-serif;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Inputs — consistent light-mode style */
+input, textarea, select {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  color: #0F172A;
+  font-family: 'Inter', system-ui, sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: #1A56DB;
+  box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
 }
 
 .fade-up { opacity: 0; transform: translateY(32px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); }
@@ -57,14 +99,13 @@ body {
 
 .pulse-dot { animation: pulse-dot 2s infinite; }
 .blink-cursor { animation: blink-cursor 1s infinite; }
-.skeleton { animation: skeleton-pulse 1.5s ease-in-out infinite; }
-input[type='range'] { accent-color: #1B4FD8; }
+.skeleton { animation: skeleton-pulse 1.5s ease-in-out infinite; background: #E2E8F0 !important; border-radius: 6px; }
+input[type='range'] { accent-color: #1A56DB; }
 
 @media print {
   nav, aside, .sidebar, .topbar, .left-panel, .center-panel, .action-bar, button {
     display: none !important;
   }
-
   .right-panel, .pa-form-output {
     display: block !important;
     width: 100% !important;
@@ -73,22 +114,13 @@ input[type='range'] { accent-color: #1B4FD8; }
     color: black !important;
     background: white !important;
   }
-
   .pa-form-section {
     border-bottom: 1px solid #ccc !important;
     padding: 12px 0 !important;
     page-break-inside: avoid;
   }
-
-  .pa-form-label {
-    color: #333 !important;
-    font-weight: bold !important;
-  }
-
-  .pa-form-value {
-    color: black !important;
-  }
-
+  .pa-form-label { color: #333 !important; font-weight: bold !important; }
+  .pa-form-value { color: black !important; }
   .pa-form-output::before {
     content: "PRIOR AUTHORIZATION REQUEST — AUTHFLOW";
     display: block;

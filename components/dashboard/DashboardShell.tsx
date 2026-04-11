@@ -24,13 +24,13 @@ export default function DashboardShell({ userInfo, children }: DashboardShellPro
   }, [isMobile])
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#0B0F1A' }}>
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#F4F7FB' }}>
       {/* Mobile backdrop */}
       {isMobile && sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
           style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
+            position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.4)',
             zIndex: 100, cursor: 'pointer',
           }}
         />
@@ -54,7 +54,7 @@ export default function DashboardShell({ userInfo, children }: DashboardShellPro
       <main style={{
         flex: 1,
         overflowY: 'auto',
-        background: '#0D1117',
+        background: '#F4F7FB',
         marginLeft: isMobile ? 0 : undefined,
         position: 'relative',
       }}>
@@ -65,15 +65,15 @@ export default function DashboardShell({ userInfo, children }: DashboardShellPro
             aria-label="Open menu"
             style={{
               position: 'fixed', top: '14px', left: '16px', zIndex: 50,
-              background: 'rgba(13,17,23,0.95)',
-              border: '1px solid rgba(255,255,255,0.1)',
+              background: '#FFFFFF',
+              border: '1px solid #E2E8F0',
               borderRadius: '6px',
               padding: '7px 10px',
               cursor: 'pointer',
-              color: '#ffffff',
+              color: '#0F172A',
               fontSize: '14px',
               lineHeight: 1,
-              backdropFilter: 'blur(10px)',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
             }}
           >
             ☰

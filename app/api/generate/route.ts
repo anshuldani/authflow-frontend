@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { generatePriorAuth } from '@/lib/gemini'
 import { generatePriorAuthViaBackend, isBackendAvailable } from '@/lib/backend-client'
 import { PAYERS } from '@/lib/types'
-import type { GeneratedForm, PatientInfo, CompletePAForm, PracticeProfile } from '@/lib/types'
+import type { GeneratedForm, PatientInfo, CompletePAForm, PracticeProfile, DrugPAInfo } from '@/lib/types'
 
 interface GenerateRequestBody {
   clinicalNote?: string
@@ -12,6 +12,7 @@ interface GenerateRequestBody {
   procedureCategory?: string
   patientInfo?: PatientInfo
   urgency?: string
+  drugPAInfo?: DrugPAInfo
 }
 
 export async function POST(request: Request) {
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json() as GenerateRequestBody
-    const { clinicalNote, payerId, procedureName, procedureCategory, patientInfo, urgency } = body
+    const { clinicalNote, payerId, procedureName, procedureCategory, patientInfo, urgency, drugPAInfo } = body
 
     if (!clinicalNote || clinicalNote.trim().length < 40) {
       return NextResponse.json({ success: false, error: 'Clinical note must be at least 40 characters' }, { status: 400 })
@@ -77,7 +78,7 @@ export async function POST(request: Request) {
     } else {
       generatedForm = await generatePriorAuth(
         clinicalNote, payerId, procedureName, procedureCategory ?? '',
-        urgency ?? 'routine', patientInfo
+        urgency ?? 'routine', patientInfo, drugPAInfo
       )
     }
 
@@ -134,25 +135,50 @@ export async function POST(request: Request) {
     }
 
     // Store PA — never store raw clinical note
-    const { data: pa, error: insertError } = await supabase
-      .from('prior_auths')
-      .insert({
-        user_id: user.id,
-        payer: payer.name,
-        payer_id: payerId,
-        procedure_name: procedureName,
-        icd10_code: generatedForm.icd10_code,
-        generated_form: generatedForm,
-        complete_pa_form: completePAForm,
-        status: 'draft',
-        patient_name: patientInfo?.patient_name ?? null,
-        patient_dob: patientInfo?.patient_dob ?? null,
-        patient_member_id: patientInfo?.patient_member_id ?? null,
-        patient_group_number: patientInfo?.patient_group_number ?? null,
-        urgency: urgency ?? 'routine',
-      })
-      .select()
-      .single()
+    // Build insert payload — only include columns confirmed to exist in the DB.
+    // Extended columns (patient_name, urgency, complete_pa_form, etc.) are added by
+    // migration 003_all_columns.sql. Until that migration is run, store everything
+    // inside generated_form JSONB so the PA is still fully viewable.
+    const insertPayload: Record<string, unknown> = {
+      user_id: user.id,
+      payer: payer.name,
+      payer_id: payerId,
+      procedure_name: procedureName,
+      icd10_code: generatedForm.icd10_code,
+      generated_form: { ...generatedForm, _complete: completePAForm },
+      status: 'draft',
+    }
+
+    // Opportunistically add extended columns — Supabase will reject unknown columns
+    // so we catch that error and retry with just the base columns.
+    let pa: unknown = null
+    let insertError: unknown = null
+
+    const tryInsert = async (payload: Record<string, unknown>) => {
+      const result = await supabase.from('prior_auths').insert(payload).select().single()
+      return result
+    }
+
+    // First attempt: full payload (works once migrations are run)
+    const fullPayload = {
+      ...insertPayload,
+      complete_pa_form: completePAForm,
+      patient_name: patientInfo?.patient_name ?? null,
+      patient_dob: patientInfo?.patient_dob ?? null,
+      patient_member_id: patientInfo?.patient_member_id ?? null,
+      patient_group_number: patientInfo?.patient_group_number ?? null,
+      patient_plan_name: patientInfo?.patient_plan_name ?? null,
+      urgency: urgency ?? 'routine',
+    }
+
+    let result = await tryInsert(fullPayload)
+    if (result.error && (result.error.code === '42703' || result.error.message?.includes('does not exist'))) {
+      // Migration not run yet — fall back to base columns only
+      console.warn('[/api/generate] Extended columns missing, falling back to base insert. Run migrations/003_all_columns.sql in Supabase.')
+      result = await tryInsert(insertPayload)
+    }
+    pa = result.data
+    insertError = result.error
 
     if (insertError) throw insertError
 
@@ -162,7 +188,8 @@ export async function POST(request: Request) {
       .eq('id', user.id)
 
     return NextResponse.json({ success: true, pa, completePAForm })
-  } catch {
+  } catch (err) {
+    console.error('[/api/generate] error:', err)
     return NextResponse.json({ success: false, error: 'Generation failed. Please try again.' }, { status: 503 })
   }
 }

@@ -16,7 +16,10 @@ export async function GET() {
       .eq('user_id', user.id)
       .single()
 
-    if (error && error.code !== 'PGRST116') throw error
+    if (error) {
+      if (error.code === 'PGRST116') { /* no row — fine */ }
+      else { console.error('[/api/practice GET] supabase error:', error); throw error }
+    }
 
     return NextResponse.json({ success: true, practice: data ?? null })
   } catch {

@@ -2,6 +2,69 @@ export type Plan = 'free' | 'pro' | 'clinic'
 export type PAStatus = 'draft' | 'submitted' | 'approved' | 'denied' | 'appealed'
 export type AppealStatus = 'draft' | 'submitted' | 'overturned' | 'upheld'
 
+export interface StepTherapyEntry {
+  drug_name: string
+  dose: string
+  start_date?: string
+  end_date?: string
+  duration_weeks?: number
+  outcome: 'inadequate_response' | 'adverse_effect' | 'contraindicated' | 'not_covered' | 'other'
+  reason_stopped?: string
+}
+
+export interface DrugPAInfo {
+  brand_name: string
+  generic_name: string
+  ndc_code?: string
+  dosage_strength: string
+  quantity_requested: number
+  days_supply: number
+  refills_requested: number
+  route_of_administration: string
+  prescriber_name: string
+  prescriber_npi: string
+  prescriber_dea?: string
+  prescriber_phone?: string
+  prescriber_specialty?: string
+  exception_basis: 'step_therapy_failure' | 'medical_necessity' | 'contraindication' | 'no_alternative'
+  quantity_override_justification?: string
+  step_therapy: StepTherapyEntry[]
+}
+
+export interface PASubmission {
+  submitted_at: string
+  method: 'fax' | 'portal' | 'phone' | 'mail'
+  confirmation_number?: string
+}
+
+export interface PAFollowUp {
+  follow_up_date?: string
+  payer_case_number?: string
+  notes?: string
+  peer_to_peer_requested?: boolean
+  peer_to_peer_scheduled_at?: string
+}
+
+export interface PADenial {
+  denial_code?: string
+  denial_reason: string
+  denial_date?: string
+  appeal_deadline?: string
+}
+
+export const DENIAL_CODES = [
+  { code: 'CO-50', label: 'CO-50 — Not medically necessary' },
+  { code: 'CO-4', label: 'CO-4 — Service not covered' },
+  { code: 'CO-197', label: 'CO-197 — PA required but not obtained' },
+  { code: 'CO-96', label: 'CO-96 — Non-covered charge' },
+  { code: 'N-130', label: 'N-130 — Step therapy not completed' },
+  { code: 'N-522', label: 'N-522 — Duplicate claim' },
+  { code: 'OA-23', label: 'OA-23 — Information requested not provided' },
+  { code: 'PI-15', label: 'PI-15 — Claim not covered by this payer' },
+  { code: 'PR-1', label: 'PR-1 — Deductible amount' },
+  { code: 'CUSTOM', label: 'Other / Custom' },
+]
+
 export interface User {
   id: string
   email: string
@@ -45,16 +108,28 @@ export interface PriorAuth {
   generated_form?: GeneratedForm
   complete_pa_form?: CompletePAForm
   extracted_clinical_data?: ExtractedClinicalData
+  drug_pa_info?: DrugPAInfo
   status: PAStatus
   submitted_at?: string
   decision_at?: string
   notes?: string
   auth_number?: string
+  auth_valid_from?: string
+  auth_valid_through?: string
   patient_name?: string
   patient_dob?: string
   patient_member_id?: string
   patient_group_number?: string
+  patient_plan_name?: string
   urgency?: string
+  // Lifecycle tracking
+  submission_method?: 'fax' | 'portal' | 'phone' | 'mail'
+  submission_confirmation?: string
+  payer_case_number?: string
+  follow_up_date?: string
+  follow_up_notes?: string
+  peer_to_peer_requested?: boolean
+  denial_code?: string
   created_at: string
   updated_at?: string
 }

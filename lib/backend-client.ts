@@ -25,6 +25,12 @@ interface FormSection {
   policy_citation?: string | null
 }
 
+interface CriterionDetail {
+  criterion: string
+  met: boolean
+  evidence: string
+}
+
 interface PABackendResponse {
   success: boolean
   payer_name: string
@@ -34,12 +40,21 @@ interface PABackendResponse {
   confidence: string
   processing_time_ms?: number | null
   demo_mode: boolean
-  // Flat fields added in latest backend version
+  // Flat GeneratedForm-compatible fields
   icd10_code?: string | null
+  icd10_description?: string | null
   cpt_code?: string | null
+  cpt_description?: string | null
+  clinical_justification?: string | null
+  medical_necessity?: string | null
+  supporting_evidence?: string | null
+  policy_sections_cited?: string[]
   criteria_met?: number | null
   criteria_total?: number | null
+  criteria_details?: CriterionDetail[]
   approval_likelihood?: string | null
+  approval_reasoning?: string | null
+  missing_information?: string[]
 }
 
 // ── Section label → field mapping ────────────────────────────────────────────
@@ -82,56 +97,40 @@ function extractCitations(sections: FormSection[]): string[] {
 // ── Adapter ───────────────────────────────────────────────────────────────────
 
 function adaptResponse(res: PABackendResponse): GeneratedForm {
+  // Use flat top-level fields directly (backend returns these since latest version)
+  // Fall back to parsing form_sections content if flat fields are absent (older backend)
   const diagnosisSection = findSection(res.form_sections, 'diagnosis', 'patient')
   const procedureSection = findSection(res.form_sections, 'procedure', 'requested service')
   const justificationSection = findSection(res.form_sections, 'justification')
   const necessitySection = findSection(res.form_sections, 'necessity')
   const evidenceSection = findSection(res.form_sections, 'evidence', 'supporting')
 
-  // Prefer flat top-level fields (new backend), fall back to parsing sections
   const icd10Raw = parseIcd10(diagnosisSection?.content ?? '')
   const cptRaw = parseCpt(procedureSection?.content ?? '')
-
-  const icd10_code = res.icd10_code ?? icd10Raw.code
-  const icd10_description = icd10Raw.description
-
-  const cpt_parts = cptRaw
-  const cpt_code = res.cpt_code ?? cpt_parts.code
-  const cpt_description = cpt_parts.description
-
-  const clinical_justification =
-    justificationSection?.content ?? res.raw_justification ?? ''
-
-  const medical_necessity =
-    necessitySection?.content ?? ''
-
-  const supporting_evidence =
-    evidenceSection?.content ?? ''
-
-  const policy_sections_cited = extractCitations(res.form_sections)
-
-  const criteria_met = res.criteria_met ?? 0
-  const criteria_total = res.criteria_total ?? 0
 
   const approval_likelihood =
     (res.approval_likelihood as 'high' | 'medium' | 'low') ??
     (res.confidence === 'high' ? 'high' : res.confidence === 'medium' ? 'medium' : 'low')
 
   return {
-    icd10_code,
-    icd10_description,
-    cpt_code,
-    cpt_description,
-    clinical_justification,
-    medical_necessity,
-    supporting_evidence,
-    policy_sections_cited,
-    criteria_met,
-    criteria_total,
-    criteria_details: [],   // backend doesn't return per-criterion breakdown yet
+    icd10_code: res.icd10_code ?? icd10Raw.code,
+    icd10_description: res.icd10_description ?? icd10Raw.description,
+    cpt_code: res.cpt_code ?? cptRaw.code,
+    cpt_description: res.cpt_description ?? cptRaw.description,
+    clinical_justification: res.clinical_justification ?? justificationSection?.content ?? res.raw_justification ?? '',
+    medical_necessity: res.medical_necessity ?? necessitySection?.content ?? '',
+    supporting_evidence: res.supporting_evidence ?? evidenceSection?.content ?? '',
+    policy_sections_cited: res.policy_sections_cited ?? extractCitations(res.form_sections),
+    criteria_met: res.criteria_met ?? 0,
+    criteria_total: res.criteria_total ?? 0,
+    criteria_details: (res.criteria_details ?? []).map(c => ({
+      criterion: c.criterion,
+      met: c.met,
+      evidence: c.evidence,
+    })),
     approval_likelihood,
-    approval_reasoning: res.raw_justification ?? '',
-    missing_information: [],
+    approval_reasoning: res.approval_reasoning ?? res.raw_justification ?? '',
+    missing_information: res.missing_information ?? [],
   }
 }
 

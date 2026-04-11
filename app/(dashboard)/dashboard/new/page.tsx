@@ -1,9 +1,9 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { PAYERS, PROCEDURE_CATEGORIES } from '@/lib/types'
-import type { CompletePAForm, PracticeProfile, ExtractedClinicalData, PriorAuth } from '@/lib/types'
+import type { CompletePAForm, PracticeProfile, ExtractedClinicalData, PriorAuth, StepTherapyEntry, DrugPAInfo } from '@/lib/types'
 
 // ─── helpers ───────────────────────────────────────────────────────────────
 
@@ -137,19 +137,20 @@ type LoadingPhase = 'idle' | 'generating' | 'done' | 'error'
 
 export default function NewPAPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   // Practice profile
   const [practice, setPractice] = useState<PracticeProfile | null>(null)
   const [practiceLoading, setPracticeLoading] = useState(true)
 
-  // Left panel — patient
-  const [patientName, setPatientName] = useState('')
-  const [patientDob, setPatientDob] = useState('')
-  const [memberId, setMemberId] = useState('')
-  const [groupNumber, setGroupNumber] = useState('')
+  // Left panel — patient (pre-filled from renewal query params if present)
+  const [patientName, setPatientName] = useState(searchParams.get('patient_name') ?? '')
+  const [patientDob, setPatientDob] = useState(searchParams.get('patient_dob') ?? '')
+  const [memberId, setMemberId] = useState(searchParams.get('member_id') ?? '')
+  const [groupNumber, setGroupNumber] = useState(searchParams.get('group_number') ?? '')
 
   // Left panel — service
-  const [payerId, setPayerId] = useState<string | null>(null)
+  const [payerId, setPayerId] = useState<string | null>(searchParams.get('payer_id') ?? null)
   const [procedureCategory, setProcedureCategory] = useState('')
   const [urgency, setUrgency] = useState<'routine' | 'urgent' | 'emergent'>('routine')
   const [serviceDate, setServiceDate] = useState('')
@@ -182,6 +183,27 @@ export default function NewPAPage() {
   // User plan info (for quota)
   const [userPlan, setUserPlan] = useState<{ plan: string; pa_count_this_month: number; pa_quota: number | null } | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
+
+  // Drug PA fields (shown when procedureCategory starts with 'drug_')
+  const [drugBrandName, setDrugBrandName] = useState('')
+  const [drugGenericName, setDrugGenericName] = useState('')
+  const [drugNdc, setDrugNdc] = useState('')
+  const [drugDosage, setDrugDosage] = useState('')
+  const [drugQuantity, setDrugQuantity] = useState('')
+  const [drugDaysSupply, setDrugDaysSupply] = useState('')
+  const [drugRefills, setDrugRefills] = useState('0')
+  const [drugRoute, setDrugRoute] = useState('oral')
+  const [drugExceptionBasis, setDrugExceptionBasis] = useState<DrugPAInfo['exception_basis']>('step_therapy_failure')
+  const [prescriberName, setPrescriberName] = useState('')
+  const [prescriberNpi, setPrescriberNpi] = useState('')
+  const [prescriberDea, setPrescriberDea] = useState('')
+  const [prescriberPhone, setPrescriberPhone] = useState('')
+  const [prescriberSpecialty, setPrescriberSpecialty] = useState('')
+  const [stepTherapy, setStepTherapy] = useState<StepTherapyEntry[]>([
+    { drug_name: '', dose: '', outcome: 'inadequate_response', reason_stopped: '' },
+  ])
+  const [drugSectionExpanded, setDrugSectionExpanded] = useState(true)
+  const [stepTherapyExpanded, setStepTherapyExpanded] = useState(true)
 
   // Fetch practice + user data
   useEffect(() => {
@@ -220,13 +242,54 @@ export default function NewPAPage() {
   const checklist = getChecklist(procedureCategory)
   const checkedCount = checklist.filter(item => item.check(note)).length
 
+  const isDrugPA = procedureCategory.startsWith('drug_')
+
+  // Build drug PA info for submission
+  const buildDrugPAInfo = (): DrugPAInfo | undefined => {
+    if (!isDrugPA) return undefined
+    return {
+      brand_name: drugBrandName,
+      generic_name: drugGenericName,
+      ndc_code: drugNdc || undefined,
+      dosage_strength: drugDosage,
+      quantity_requested: parseInt(drugQuantity) || 0,
+      days_supply: parseInt(drugDaysSupply) || 30,
+      refills_requested: parseInt(drugRefills) || 0,
+      route_of_administration: drugRoute,
+      prescriber_name: prescriberName,
+      prescriber_npi: prescriberNpi,
+      prescriber_dea: prescriberDea || undefined,
+      prescriber_phone: prescriberPhone || undefined,
+      prescriber_specialty: prescriberSpecialty || undefined,
+      exception_basis: drugExceptionBasis,
+      step_therapy: stepTherapy.filter(s => s.drug_name.trim()),
+    }
+  }
+
+  // Step therapy note: auto-generate text from structured entries
+  const stepTherapyText = stepTherapy
+    .filter(s => s.drug_name.trim())
+    .map((s, i) => {
+      const durationStr = s.duration_weeks ? ` for ${s.duration_weeks} weeks` : (s.start_date && s.end_date ? ` from ${s.start_date} to ${s.end_date}` : '')
+      const outcomeMap: Record<string, string> = {
+        inadequate_response: 'inadequate response',
+        adverse_effect: 'adverse effect',
+        contraindicated: 'contraindicated',
+        not_covered: 'not covered by plan',
+        other: s.reason_stopped ?? 'discontinued',
+      }
+      return `${i + 1}. ${s.drug_name} ${s.dose}${durationStr} — ${outcomeMap[s.outcome]}${s.reason_stopped && s.outcome !== 'other' ? ` (${s.reason_stopped})` : ''}`
+    })
+    .join('\n')
+
   // Form completeness (separate from loading state)
   const formComplete =
     patientName.trim().length > 0 &&
     memberId.trim().length > 0 &&
     !!payerId &&
     procedureCategory !== '' &&
-    note.trim().length >= 40
+    note.trim().length >= 40 &&
+    (!isDrugPA || (drugGenericName.trim().length > 0 && prescriberNpi.trim().length > 0))
 
   const canGenerate = formComplete && loadingPhase === 'idle'
 
@@ -236,6 +299,8 @@ export default function NewPAPage() {
   if (!payerId) missingItems.push('Select a payer')
   if (!procedureCategory) missingItems.push('Select procedure type')
   if (note.trim().length < 40) missingItems.push('Add a clinical note (min 40 chars)')
+  if (isDrugPA && !drugGenericName.trim()) missingItems.push('Add generic drug name')
+  if (isDrugPA && !prescriberNpi.trim()) missingItems.push('Add prescriber NPI')
 
   const isAtQuota = userPlan?.plan === 'free' && (userPlan.pa_quota !== null) && (userPlan.pa_count_this_month >= (userPlan.pa_quota ?? 10))
 
@@ -254,15 +319,22 @@ export default function NewPAPage() {
     const procedureLabel = PROCEDURE_CATEGORIES.find(p => p.value === procedureCategory)?.label ?? procedureCategory
 
     try {
+      const drugInfo = buildDrugPAInfo()
+      // For drug PAs, append structured step therapy to the clinical note for AI context
+      const fullNote = isDrugPA && stepTherapyText
+        ? `${note}\n\nSTEP THERAPY HISTORY:\n${stepTherapyText}`
+        : note
+
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          clinicalNote: note,
+          clinicalNote: fullNote,
           payerId,
           procedureName: procedureLabel,
           procedureCategory,
           urgency,
+          drugPAInfo: drugInfo,
           patientInfo: {
             patient_name: patientName,
             patient_dob: patientDob,
@@ -554,6 +626,189 @@ ${f.policy_sections_cited.join(' · ')}`
               <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginTop: '-8px', marginBottom: '8px' }}>Only needed if different from your practice</div>
             </>
           )}
+
+          {/* ── DRUG PA FIELDS ── */}
+          {isDrugPA && (
+            <>
+              {divider()}
+              <button
+                onClick={() => setDrugSectionExpanded(v => !v)}
+                style={{ background: 'none', border: 'none', padding: '0 0 10px 0', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', width: '100%', textAlign: 'left' }}
+              >
+                <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#7BA3FF', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Drug information *</span>
+                <span style={{ color: '#4A5A7A', fontSize: '10px', marginLeft: 'auto' }}>{drugSectionExpanded ? '▲' : '▼'}</span>
+              </button>
+              {drugSectionExpanded && (
+                <>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+                    <div>
+                      {sLabel('Brand name')}
+                      {fieldInput(drugBrandName, setDrugBrandName, 'e.g. Humira')}
+                    </div>
+                    <div>
+                      {sLabel('Generic name *')}
+                      {fieldInput(drugGenericName, setDrugGenericName, 'e.g. adalimumab')}
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+                    <div>
+                      {sLabel('Dosage / strength')}
+                      {fieldInput(drugDosage, setDrugDosage, 'e.g. 40mg/0.8mL')}
+                    </div>
+                    <div>
+                      {sLabel('NDC code')}
+                      {fieldInput(drugNdc, setDrugNdc, '00074-3799-02')}
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+                    <div>
+                      {sLabel('Quantity')}
+                      {fieldInput(drugQuantity, setDrugQuantity, '2', 'number')}
+                    </div>
+                    <div>
+                      {sLabel('Days supply')}
+                      {fieldInput(drugDaysSupply, setDrugDaysSupply, '28', 'number')}
+                    </div>
+                    <div>
+                      {sLabel('Refills')}
+                      {fieldInput(drugRefills, setDrugRefills, '0', 'number')}
+                    </div>
+                  </div>
+                  <div style={{ marginBottom: '12px' }}>
+                    {sLabel('Route of administration')}
+                    <select
+                      value={drugRoute}
+                      onChange={e => setDrugRoute(e.target.value)}
+                      style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                    >
+                      {['Oral', 'Subcutaneous injection', 'IV infusion', 'Intramuscular', 'Topical', 'Inhalation', 'Ophthalmic', 'Other'].map(r => (
+                        <option key={r} value={r.toLowerCase()}>{r}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div style={{ marginBottom: '12px' }}>
+                    {sLabel('Exception basis')}
+                    <select
+                      value={drugExceptionBasis}
+                      onChange={e => setDrugExceptionBasis(e.target.value as DrugPAInfo['exception_basis'])}
+                      style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                    >
+                      <option value="step_therapy_failure">Step therapy failure</option>
+                      <option value="medical_necessity">Medical necessity</option>
+                      <option value="contraindication">Contraindication to alternatives</option>
+                      <option value="no_alternative">No therapeutic alternative</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {divider()}
+              <button
+                onClick={() => setStepTherapyExpanded(v => !v)}
+                style={{ background: 'none', border: 'none', padding: '0 0 10px 0', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', width: '100%', textAlign: 'left' }}
+              >
+                <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#7BA3FF', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Step therapy history</span>
+                <span style={{ background: 'rgba(27,79,216,0.2)', color: '#7BA3FF', fontSize: '10px', fontFamily: ff, padding: '1px 6px', borderRadius: '99px', marginLeft: '6px' }}>{stepTherapy.filter(s => s.drug_name.trim()).length} drugs</span>
+                <span style={{ color: '#4A5A7A', fontSize: '10px', marginLeft: 'auto' }}>{stepTherapyExpanded ? '▲' : '▼'}</span>
+              </button>
+              {stepTherapyExpanded && (
+                <div>
+                  <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginBottom: '10px' }}>
+                    List all prior drugs tried — this is the most common reason drug PAs get denied.
+                  </div>
+                  {stepTherapy.map((entry, idx) => (
+                    <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', padding: '12px', marginBottom: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <span style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Drug {idx + 1}</span>
+                        {stepTherapy.length > 1 && (
+                          <button
+                            onClick={() => setStepTherapy(prev => prev.filter((_, i) => i !== idx))}
+                            style={{ background: 'none', border: 'none', color: '#4A5A7A', cursor: 'pointer', fontSize: '12px', padding: 0 }}
+                          >✕</button>
+                        )}
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '6px' }}>
+                        <input
+                          value={entry.drug_name}
+                          onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, drug_name: e.target.value } : s))}
+                          placeholder="Drug name"
+                          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                        />
+                        <input
+                          value={entry.dose}
+                          onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, dose: e.target.value } : s))}
+                          placeholder="Dose (e.g. 15mg QD)"
+                          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                        />
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '6px' }}>
+                        <input
+                          type="date"
+                          value={entry.start_date ?? ''}
+                          onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, start_date: e.target.value } : s))}
+                          placeholder="Start date"
+                          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: entry.start_date ? '#ffffff' : '#4A5A7A', fontFamily: ff, outline: 'none', colorScheme: 'dark' }}
+                        />
+                        <input
+                          type="date"
+                          value={entry.end_date ?? ''}
+                          onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, end_date: e.target.value } : s))}
+                          placeholder="End date"
+                          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: entry.end_date ? '#ffffff' : '#4A5A7A', fontFamily: ff, outline: 'none', colorScheme: 'dark' }}
+                        />
+                      </div>
+                      <select
+                        value={entry.outcome}
+                        onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, outcome: e.target.value as StepTherapyEntry['outcome'] } : s))}
+                        style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none', marginBottom: '6px' }}
+                      >
+                        <option value="inadequate_response">Inadequate response</option>
+                        <option value="adverse_effect">Adverse effect / intolerance</option>
+                        <option value="contraindicated">Contraindicated</option>
+                        <option value="not_covered">Not covered by plan</option>
+                        <option value="other">Other</option>
+                      </select>
+                      <input
+                        value={entry.reason_stopped ?? ''}
+                        onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, reason_stopped: e.target.value } : s))}
+                        placeholder="Notes (optional)"
+                        style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                      />
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => setStepTherapy(prev => [...prev, { drug_name: '', dose: '', outcome: 'inadequate_response', reason_stopped: '' }])}
+                    style={{ width: '100%', background: 'rgba(27,79,216,0.1)', border: '1px dashed rgba(27,79,216,0.3)', borderRadius: '6px', padding: '8px', fontFamily: ff, fontSize: '11px', color: '#7BA3FF', cursor: 'pointer' }}
+                  >
+                    + Add another drug
+                  </button>
+                </div>
+              )}
+
+              {divider()}
+              <button
+                onClick={() => setRenderingExpanded(v => !v)}
+                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', width: '100%', textAlign: 'left' }}
+              >
+                <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#7BA3FF', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Prescriber info *</span>
+                <span style={{ color: '#4A5A7A', fontSize: '10px', marginLeft: 'auto' }}>{renderingExpanded ? '▲' : '▼'}</span>
+              </button>
+              {renderingExpanded && (
+                <>
+                  {sLabel('Prescriber name')}
+                  {fieldInput(prescriberName, setPrescriberName, 'Dr. Jane Smith, MD')}
+                  {sLabel('Prescriber NPI *')}
+                  {fieldInput(prescriberNpi, setPrescriberNpi, '1234567890')}
+                  {sLabel('DEA number')}
+                  {fieldInput(prescriberDea, setPrescriberDea, 'AS1234563')}
+                  {sLabel('Prescriber phone')}
+                  {fieldInput(prescriberPhone, setPrescriberPhone, '(312) 555-0100')}
+                  {sLabel('Specialty')}
+                  {fieldInput(prescriberSpecialty, setPrescriberSpecialty, 'Rheumatology')}
+                </>
+              )}
+            </>
+          )}
         </div>
 
         {/* ─── CENTER PANEL ─── */}
@@ -748,6 +1003,19 @@ ${f.policy_sections_cited.join(' · ')}`
 
         {/* ─── RIGHT PANEL ─── */}
         <div className="right-panel" style={{ width: '440px', flexShrink: 0, background: '#060C16', borderLeft: '1px solid rgba(255,255,255,0.05)', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+
+          {/* Renewal banner */}
+          {searchParams.get('renew') === '1' && (
+            <div style={{ background: 'rgba(74,222,128,0.08)', borderBottom: '1px solid rgba(74,222,128,0.15)', padding: '12px 20px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <span style={{ fontSize: '14px' }}>🔄</span>
+              <div>
+                <div style={{ fontFamily: ff, fontSize: '12px', fontWeight: 600, color: '#4ade80', marginBottom: '1px' }}>Renewal — patient info pre-filled</div>
+                {searchParams.get('prev_auth') && (
+                  <div style={{ fontFamily: ff, fontSize: '11px', color: '#6B7A9A' }}>Previous auth: {searchParams.get('prev_auth')}</div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Empty state */}
           {loadingPhase === 'idle' && !result && (

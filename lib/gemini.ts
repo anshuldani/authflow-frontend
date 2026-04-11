@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-import type { GeneratedForm, PatientInfo } from './types'
+import type { GeneratedForm, PatientInfo, DrugPAInfo } from './types'
 import { PAYERS } from './types'
 import { getPolicyForRequest } from './payer-policies'
 
@@ -73,7 +73,8 @@ export async function generatePriorAuth(
   procedureName: string,
   procedureCategory: string = '',
   urgency: string = 'routine',
-  _patientInfo?: PatientInfo
+  _patientInfo?: PatientInfo,
+  drugPAInfo?: DrugPAInfo
 ): Promise<GeneratedForm> {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey || apiKey === 'your_anthropic_api_key_here') {
@@ -85,12 +86,31 @@ export async function generatePriorAuth(
   const payerName = payer?.name ?? payerId
   const policyKnowledge = getPolicyForRequest(payerId, procedureCategory || procedureName)
 
+  // Build drug-specific section for prompt
+  const drugSection = drugPAInfo ? `
+DRUG PRIOR AUTHORIZATION DETAILS:
+Brand name: ${drugPAInfo.brand_name || 'N/A'}
+Generic name: ${drugPAInfo.generic_name}
+Dosage/strength: ${drugPAInfo.dosage_strength}
+Quantity requested: ${drugPAInfo.quantity_requested} units
+Days supply: ${drugPAInfo.days_supply}
+Refills: ${drugPAInfo.refills_requested}
+Route: ${drugPAInfo.route_of_administration}
+Exception basis: ${drugPAInfo.exception_basis.replace(/_/g, ' ')}
+Prescriber: ${drugPAInfo.prescriber_name} (NPI: ${drugPAInfo.prescriber_npi})${drugPAInfo.prescriber_specialty ? `, ${drugPAInfo.prescriber_specialty}` : ''}
+${drugPAInfo.step_therapy.length > 0 ? `\nSTEP THERAPY HISTORY (must cite all in justification):\n${drugPAInfo.step_therapy.map((s, i) => {
+  const outcomeMap: Record<string, string> = { inadequate_response: 'inadequate response', adverse_effect: 'adverse effect', contraindicated: 'contraindicated', not_covered: 'not covered', other: s.reason_stopped ?? 'discontinued' }
+  const duration = s.start_date && s.end_date ? ` (${s.start_date} to ${s.end_date})` : s.duration_weeks ? ` (${s.duration_weeks} weeks)` : ''
+  return `${i + 1}. ${s.drug_name} ${s.dose}${duration} — ${outcomeMap[s.outcome] ?? s.outcome}${s.reason_stopped && s.outcome !== 'other' ? `: ${s.reason_stopped}` : ''}`
+}).join('\n')}` : ''}` : ''
+
   const prompt = `Generate a complete prior authorization request for the following case.
 
 PAYER: ${payerName}
 PROCEDURE REQUESTED: ${procedureName}
 PROCEDURE CATEGORY: ${procedureCategory}
 URGENCY: ${urgency}
+${drugSection}
 
 CLINICAL INFORMATION FROM NOTE:
 ${clinicalNote}
