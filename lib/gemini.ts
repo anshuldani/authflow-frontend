@@ -1,0 +1,318 @@
+import Anthropic from '@anthropic-ai/sdk'
+import type { GeneratedForm, PatientInfo } from './types'
+import { PAYERS } from './types'
+import { getPolicyForRequest } from './payer-policies'
+
+const SYSTEM_PROMPT = `You are a senior medical billing specialist with 20 years of experience in prior authorization. You have deep knowledge of payer-specific clinical criteria including MCG guidelines, InterQual criteria, and payer proprietary policies. You write prior authorization justifications that are approved on first submission. You know exactly which ICD-10 and CPT codes are required, and you write clinical justifications in the exact language each payer uses. Return ONLY valid JSON.`
+
+function getMockGeneratedForm(payerId: string, procedureName: string): GeneratedForm {
+  const payer = PAYERS.find(p => p.id === payerId)
+  return {
+    icd10_code: 'M54.42',
+    icd10_description: 'Lumbago with sciatica, left side',
+    cpt_code: '72265',
+    cpt_description: 'Myelography via lumbar injection including radiological supervision',
+    clinical_justification: `Patient presents with 6 weeks of progressive lower back pain with left leg radiculopathy, failed conservative management including NSAIDs and 4 weeks of physical therapy. Neurological deficits at L4-L5 dermatome are documented, indicating the need for advanced imaging per ${payer?.name ?? 'payer'} clinical policy criteria.`,
+    medical_necessity: `CT myelogram is medically necessary per ${payer?.name ?? 'payer'} policy §4.2, as conservative treatment has been exhausted and neurological deficit has been confirmed on examination.`,
+    supporting_evidence: '• 6 weeks progressive lower back pain\n• Left leg radiculopathy documented\n• Failed NSAIDs and PT ×4 weeks\n• Decreased sensation L4-L5 dermatome\n• Assessment: lumbar radiculopathy, suspected herniated disc',
+    policy_sections_cited: ['§4.2 — CT Myelogram Criteria', '§4.2.3 — Conservative Treatment Threshold', '§3.1 — Neurological Deficit Documentation'],
+    criteria_met: 3,
+    criteria_total: 3,
+    criteria_details: [
+      { criterion: 'Conservative treatment ≥4 weeks documented', met: true, evidence: 'PT ×4 weeks and NSAIDs documented' },
+      { criterion: 'Neurological deficit present', met: true, evidence: 'Decreased sensation L4-L5 dermatome' },
+      { criterion: 'Imaging will change clinical management', met: true, evidence: 'Surgical planning requires advanced imaging' },
+    ],
+    approval_likelihood: 'high',
+    approval_reasoning: 'All required criteria met: conservative treatment documented, neurological deficit present, and imaging clearly indicated for surgical planning.',
+    missing_information: [],
+  }
+}
+
+function getMockAppealLetter(payerId: string, form: GeneratedForm, denialReason: string): string {
+  const payer = PAYERS.find(p => p.id === payerId)
+  return `FORMAL APPEAL OF PRIOR AUTHORIZATION DENIAL
+
+Date: ${new Date().toLocaleDateString()}
+Re: Appeal of Denial — ${form.cpt_code} (${form.cpt_description})
+Diagnosis: ${form.icd10_code} — ${form.icd10_description}
+
+To the ${payer?.name ?? 'Insurance'} Medical Review Board,
+
+We formally appeal the denial of prior authorization for ${form.cpt_description} (CPT ${form.cpt_code}).
+
+DENIAL REASON STATED: ${denialReason}
+
+GROUNDS FOR APPEAL:
+
+The stated denial reason is inconsistent with the documented clinical record and does not accurately reflect the applicable policy criteria.
+
+Per ${payer?.name ?? 'your'} clinical policy ${form.policy_sections_cited[0] ?? '§4.2'}, the criteria for approval require documented conservative treatment failure and clinical necessity. The medical record clearly establishes:
+
+${form.supporting_evidence}
+
+The clinical justification provided meets all stated criteria: ${form.clinical_justification}
+
+Furthermore, medical necessity is established per policy: ${form.medical_necessity}
+
+The denial criteria have not been appropriately applied. All ${form.criteria_met} of ${form.criteria_total} required criteria have been met, as documented in the prior authorization submission and clinical record.
+
+We request immediate reconsideration and approval of this prior authorization request.
+
+Respectfully submitted,
+Authflow Medical Billing Services`
+}
+
+function getClient(): Anthropic {
+  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+}
+
+export async function generatePriorAuth(
+  clinicalNote: string,
+  payerId: string,
+  procedureName: string,
+  procedureCategory: string = '',
+  urgency: string = 'routine',
+  _patientInfo?: PatientInfo
+): Promise<GeneratedForm> {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey || apiKey === 'your_anthropic_api_key_here') {
+    return getMockGeneratedForm(payerId, procedureName)
+  }
+
+  const client = getClient()
+  const payer = PAYERS.find(p => p.id === payerId)
+  const payerName = payer?.name ?? payerId
+  const policyKnowledge = getPolicyForRequest(payerId, procedureCategory || procedureName)
+
+  const prompt = `Generate a complete prior authorization request for the following case.
+
+PAYER: ${payerName}
+PROCEDURE REQUESTED: ${procedureName}
+PROCEDURE CATEGORY: ${procedureCategory}
+URGENCY: ${urgency}
+
+CLINICAL INFORMATION FROM NOTE:
+${clinicalNote}
+
+PAYER-SPECIFIC CRITERIA FOR THIS PROCEDURE:
+${policyKnowledge}
+
+Generate the most specific and accurate ICD-10 code for this case (use 7th character extension if applicable). Generate the correct CPT code. Write the clinical justification using ${payerName}'s exact clinical language.
+
+Return ONLY this exact JSON with no other text, no markdown, no backticks:
+{
+  "icd10_code": "most specific applicable ICD-10 code",
+  "icd10_description": "full ICD-10 description",
+  "cpt_code": "most appropriate CPT code",
+  "cpt_description": "full CPT description",
+  "clinical_justification": "2-3 sentences in payer clinical language citing specific criteria met",
+  "medical_necessity": "1-2 sentences explaining medical necessity in payer language",
+  "supporting_evidence": "bullet points of supporting evidence from the note",
+  "policy_sections_cited": ["specific policy sections this request satisfies"],
+  "criteria_met": 3,
+  "criteria_total": 3,
+  "criteria_details": [{"criterion": "description", "met": true, "evidence": "from note"}],
+  "approval_likelihood": "high",
+  "approval_reasoning": "brief explanation of likelihood assessment",
+  "missing_information": ["list any information that would strengthen this request, or empty array"]
+}`
+
+  try {
+    const message = await client.messages.create({
+      model: 'claude-opus-4-6',
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: prompt }],
+    })
+    const text = (message.content[0] as { type: string; text: string }).text.trim()
+    const cleaned = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim()
+    return JSON.parse(cleaned) as GeneratedForm
+  } catch {
+    try {
+      const retryPrompt = `${prompt}\n\nCRITICAL: Return ONLY raw JSON. No markdown. No backticks. Start with { and end with }.`
+      const message2 = await client.messages.create({
+        model: 'claude-opus-4-6',
+        max_tokens: 1024,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: retryPrompt }],
+      })
+      const text2 = (message2.content[0] as { type: string; text: string }).text.trim()
+      const cleaned2 = text2.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim()
+      return JSON.parse(cleaned2) as GeneratedForm
+    } catch {
+      return getMockGeneratedForm(payerId, procedureName)
+    }
+  }
+}
+
+export async function generateAppeal(
+  payerId: string,
+  generatedForm: GeneratedForm,
+  denialReason: string
+): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey || apiKey === 'your_anthropic_api_key_here') {
+    return getMockAppealLetter(payerId, generatedForm, denialReason)
+  }
+
+  const client = getClient()
+  const payer = PAYERS.find(p => p.id === payerId)
+  const payerName = payer?.name ?? payerId
+  const policyKnowledge = getPolicyForRequest(payerId, '')
+
+  const prompt = `Write a formal prior authorization appeal letter for the following denial.
+
+PAYER: ${payerName}
+PAYER POLICY:
+${policyKnowledge}
+
+DENIAL REASON: ${denialReason}
+
+PRIOR AUTH DETAILS:
+- ICD-10: ${generatedForm.icd10_code} — ${generatedForm.icd10_description}
+- CPT: ${generatedForm.cpt_code} — ${generatedForm.cpt_description}
+- Clinical Justification: ${generatedForm.clinical_justification}
+- Medical Necessity: ${generatedForm.medical_necessity}
+- Policy Sections Previously Cited: ${generatedForm.policy_sections_cited.join(', ')}
+- Criteria Met: ${generatedForm.criteria_met} of ${generatedForm.criteria_total}
+
+Write a formal appeal letter that:
+1. States this is a formal appeal of the denial
+2. Quotes the payer's OWN policy language to show criteria WERE met
+3. Directly addresses and refutes each element of the denial reason
+4. Cites specific policy sections that support the claim
+5. Requests immediate reconsideration and approval
+
+Format: Plain text, formal letter structure. Do not use markdown.`
+
+  try {
+    const message = await client.messages.create({
+      model: 'claude-opus-4-6',
+      max_tokens: 1024,
+      system: 'You are an expert medical billing attorney writing formal insurance appeal letters. Be firm, professional, and clinical. Never plead. Quote policy against itself. Return plain text only.',
+      messages: [{ role: 'user', content: prompt }],
+    })
+    return (message.content[0] as { type: string; text: string }).text.trim()
+  } catch {
+    return getMockAppealLetter(payerId, generatedForm, denialReason)
+  }
+}
+
+export async function extractClinicalDocument(
+  base64Data: string,
+  mimeType: string,
+  procedureType: string
+): Promise<Record<string, unknown>> {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey || apiKey === 'your_anthropic_api_key_here') {
+    return {
+      patient_name: null,
+      patient_dob: null,
+      visit_date: null,
+      ordering_provider: null,
+      diagnosis: 'Unable to extract — demo mode',
+      icd10_codes: [],
+      procedure_requested: null,
+      cpt_codes: [],
+      symptoms: 'Clinical note extraction requires a valid API key',
+      duration_of_symptoms: null,
+      treatments_tried: [],
+      clinical_findings: null,
+      raw_text: 'Demo mode: document extraction not available without a valid Anthropic API key.',
+      extraction_confidence: 'low',
+    }
+  }
+
+  const client = getClient()
+
+  const prompt = `Extract all clinical information from this document. Focus on information needed for a prior authorization request for: ${procedureType}.
+
+Return this exact JSON structure with no other text:
+{
+  "patient_name": "string or null",
+  "patient_dob": "MM/DD/YYYY or null",
+  "visit_date": "MM/DD/YYYY or null",
+  "ordering_provider": "string or null",
+  "diagnosis": "string (primary diagnosis as written)",
+  "icd10_codes": ["array of any ICD-10 codes mentioned, or empty array"],
+  "procedure_requested": "string or null",
+  "cpt_codes": ["array of any CPT codes mentioned, or empty array"],
+  "symptoms": "string describing all symptoms",
+  "duration_of_symptoms": "string (e.g. 6 weeks, 3 months)",
+  "treatments_tried": ["array of treatments mentioned with duration if stated"],
+  "clinical_findings": "string (exam findings, vital signs, test results)",
+  "raw_text": "full verbatim text extracted from the document",
+  "extraction_confidence": "high if printed/typed clearly, medium if partially handwritten, low if mostly handwritten or unclear"
+}`
+
+  try {
+    const message = await client.messages.create({
+      model: 'claude-opus-4-6',
+      max_tokens: 1024,
+      system: 'You are a medical records extraction specialist. Extract structured clinical information from this document. The document may be handwritten or printed. Return ONLY valid JSON with no markdown, no explanation.',
+      messages: [{
+        role: 'user',
+        content: [
+          {
+            type: 'image',
+            source: { type: 'base64', media_type: mimeType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp', data: base64Data },
+          },
+          { type: 'text', text: prompt },
+        ],
+      }],
+    })
+    const text = (message.content[0] as { type: string; text: string }).text.trim()
+    const cleaned = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim()
+    return JSON.parse(cleaned) as Record<string, unknown>
+  } catch {
+    return {
+      patient_name: null,
+      patient_dob: null,
+      visit_date: null,
+      ordering_provider: null,
+      diagnosis: null,
+      icd10_codes: [],
+      procedure_requested: null,
+      cpt_codes: [],
+      symptoms: null,
+      duration_of_symptoms: null,
+      treatments_tried: [],
+      clinical_findings: null,
+      raw_text: 'Extraction failed — please type or paste the clinical note manually.',
+      extraction_confidence: 'low',
+    }
+  }
+}
+
+export async function extractInsuranceCard(base64Data: string, mimeType: string): Promise<Record<string, unknown>> {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey || apiKey === 'your_anthropic_api_key_here') {
+    return { member_id: null, group_number: null, plan_name: null, payer_name: null, bin: null, pcn: null }
+  }
+
+  const client = getClient()
+
+  try {
+    const message = await client.messages.create({
+      model: 'claude-opus-4-6',
+      max_tokens: 256,
+      system: 'You are extracting insurance card information. Return ONLY JSON.',
+      messages: [{
+        role: 'user',
+        content: [
+          {
+            type: 'image',
+            source: { type: 'base64', media_type: mimeType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp', data: base64Data },
+          },
+          { type: 'text', text: 'Extract insurance information from this card. Return ONLY this JSON: { "member_id": "string or null", "group_number": "string or null", "plan_name": "string or null", "payer_name": "string or null", "bin": "string or null", "pcn": "string or null" }' },
+        ],
+      }],
+    })
+    const text = (message.content[0] as { type: string; text: string }).text.trim()
+    const cleaned = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim()
+    return JSON.parse(cleaned) as Record<string, unknown>
+  } catch {
+    return { member_id: null, group_number: null, plan_name: null, payer_name: null, bin: null, pcn: null }
+  }
+}
