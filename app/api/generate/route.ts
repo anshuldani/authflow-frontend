@@ -201,3 +201,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: 'Generation failed. Please try again.' }, { status: 503 })
   }
 }
+
+// Re-export for convenience
+export const dynamic = 'force-dynamic'
