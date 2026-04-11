@@ -34,3 +34,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   )
 }
+
+// Layout metadata is defined in the root layout
+// Viewport config moved here from page-level for Next.js 14 compatibility
