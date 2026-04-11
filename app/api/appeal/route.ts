@@ -46,3 +46,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: 'Appeal generation failed. Please try again.' }, { status: 503 })
   }
 }
+
+// Ensure route is always server-rendered
+export const dynamic = 'force-dynamic'
