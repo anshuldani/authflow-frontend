@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { generatePriorAuth } from '@/lib/gemini'
+import { generatePriorAuthViaBackend, isBackendAvailable } from '@/lib/backend-client'
 import { PAYERS } from '@/lib/types'
-import type { PatientInfo, CompletePAForm, PracticeProfile } from '@/lib/types'
+import type { GeneratedForm, PatientInfo, CompletePAForm, PracticeProfile } from '@/lib/types'
 
 interface GenerateRequestBody {
   clinicalNote?: string
@@ -64,15 +65,21 @@ export async function POST(request: Request) {
 
     const payer = PAYERS.find(p => p.id === payerId)!
 
-    // Generate clinical fields from Gemini
-    const generatedForm = await generatePriorAuth(
-      clinicalNote,
-      payerId,
-      procedureName,
-      procedureCategory ?? '',
-      urgency ?? 'routine',
-      patientInfo
-    )
+    // Generate clinical fields — use FastAPI backend if configured, else Claude direct
+    let generatedForm: GeneratedForm
+
+    if (isBackendAvailable()) {
+      const { data: { session } } = await supabase.auth.getSession()
+      generatedForm = await generatePriorAuthViaBackend(
+        clinicalNote, payerId, procedureName, procedureCategory ?? '',
+        urgency ?? 'routine', patientInfo, session?.access_token
+      )
+    } else {
+      generatedForm = await generatePriorAuth(
+        clinicalNote, payerId, procedureName, procedureCategory ?? '',
+        urgency ?? 'routine', patientInfo
+      )
+    }
 
     // Build CompletePAForm combining all data sources
     const completePAForm: CompletePAForm = {
