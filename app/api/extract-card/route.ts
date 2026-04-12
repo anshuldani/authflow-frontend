@@ -21,9 +21,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'File too large. Maximum 10MB.' }, { status: 413 })
     }
 
+    const mimeType = file.type || 'image/jpeg'
+    const supported = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    if (!supported.includes(mimeType)) {
+      return NextResponse.json(
+        { success: false, error: 'Unsupported file type. Please convert your image to JPEG or PNG and try again. (iPhone HEIC photos: open in Photos app → Share → Save as JPEG)' },
+        { status: 415 }
+      )
+    }
+
     const arrayBuffer = await file.arrayBuffer()
     const base64 = Buffer.from(arrayBuffer).toString('base64')
-    const mimeType = file.type || 'image/jpeg'
 
     const result = await extractInsuranceCard(base64, mimeType)
 

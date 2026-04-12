@@ -386,8 +386,9 @@ export default function NewPAPage() {
     formData.append('file', file)
     try {
       const res = await fetch('/api/extract-card', { method: 'POST', body: formData })
-      const data = await res.json() as { success: boolean; card?: { member_id?: string; group_number?: string; plan_name?: string } }
+      const data = await res.json() as { success: boolean; card?: { patient_name?: string; member_id?: string; group_number?: string; plan_name?: string } }
       if (data.success && data.card) {
+        if (data.card.patient_name && !patientName) setPatientName(data.card.patient_name)
         if (data.card.member_id) setMemberId(data.card.member_id)
         if (data.card.group_number) setGroupNumber(data.card.group_number)
       }

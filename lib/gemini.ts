@@ -308,7 +308,7 @@ Return this exact JSON structure with no other text:
 export async function extractInsuranceCard(base64Data: string, mimeType: string): Promise<Record<string, unknown>> {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey || apiKey === 'your_anthropic_api_key_here') {
-    return { member_id: null, group_number: null, plan_name: null, payer_name: null, bin: null, pcn: null }
+    return { patient_name: null, member_id: null, group_number: null, plan_name: null, payer_name: null, bin: null, pcn: null }
   }
 
   const client = getClient()
@@ -325,7 +325,7 @@ export async function extractInsuranceCard(base64Data: string, mimeType: string)
             type: 'image',
             source: { type: 'base64', media_type: mimeType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp', data: base64Data },
           },
-          { type: 'text', text: 'Extract insurance information from this card. Return ONLY this JSON: { "member_id": "string or null", "group_number": "string or null", "plan_name": "string or null", "payer_name": "string or null", "bin": "string or null", "pcn": "string or null" }' },
+          { type: 'text', text: 'Extract insurance information from this card. Return ONLY this JSON: { "patient_name": "member/subscriber full name or null", "member_id": "string or null", "group_number": "string or null", "plan_name": "string or null", "payer_name": "string or null", "bin": "string or null", "pcn": "string or null" }' },
         ],
       }],
     })
@@ -333,6 +333,6 @@ export async function extractInsuranceCard(base64Data: string, mimeType: string)
     const cleaned = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim()
     return JSON.parse(cleaned) as Record<string, unknown>
   } catch {
-    return { member_id: null, group_number: null, plan_name: null, payer_name: null, bin: null, pcn: null }
+    return { patient_name: null, member_id: null, group_number: null, plan_name: null, payer_name: null, bin: null, pcn: null }
   }
 }
