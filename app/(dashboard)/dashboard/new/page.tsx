@@ -11,7 +11,7 @@ const ff = 'var(--font-inter)'
 
 function sLabel(text: string) {
   return (
-    <div style={{ fontFamily: ff, fontSize: '9px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase' as const, letterSpacing: '0.1em', marginBottom: '10px' }}>
+    <div style={{ fontFamily: ff, fontSize: '9px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' as const, letterSpacing: '0.1em', marginBottom: '10px' }}>
       {text}
     </div>
   )
@@ -33,25 +33,25 @@ function fieldInput(
         placeholder={placeholder}
         style={{
           width: '100%',
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.08)',
+          background: '#FFFFFF',
+          border: '1px solid #E2E8F0',
           borderRadius: '7px',
           padding: '9px 12px',
           fontSize: '13px',
-          color: '#ffffff',
+          color: '#0F172A',
           fontFamily: ff,
           outline: 'none',
         }}
         onFocus={e => (e.currentTarget.style.borderColor = '#1B4FD8')}
-        onBlur={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+        onBlur={e => (e.currentTarget.style.borderColor = '#E2E8F0')}
       />
-      {helper && <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginTop: '3px' }}>{helper}</div>}
+      {helper && <div style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8', marginTop: '3px' }}>{helper}</div>}
     </div>
   )
 }
 
 function divider() {
-  return <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', margin: '16px 0' }} />
+  return <div style={{ borderTop: '1px solid #E2E8F0', margin: '16px 0' }} />
 }
 
 // ─── checklist logic ────────────────────────────────────────────────────────
@@ -467,7 +467,7 @@ ${f.policy_sections_cited.join(' · ')}`
   // ─── render ─────────────────────────────────────────────────────────────
 
   if (practiceLoading) {
-    return <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4A5A7A', fontFamily: ff }}>Loading...</div>
+    return <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748B', fontFamily: ff }}>Loading...</div>
   }
 
   const isSubmitted = result?.pa.status === 'submitted'
@@ -496,7 +496,7 @@ ${f.policy_sections_cited.join(' · ')}`
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
         {/* ─── LEFT PANEL ─── */}
-        <div style={{ width: '320px', flexShrink: 0, background: '#080D16', borderRight: '1px solid rgba(255,255,255,0.05)', padding: '20px', overflowY: 'auto' }}>
+        <div style={{ width: '320px', flexShrink: 0, background: '#FFFFFF', borderRight: '1px solid #E2E8F0', padding: '20px', overflowY: 'auto' }}>
 
           {sLabel('Patient')}
 
@@ -508,10 +508,10 @@ ${f.policy_sections_cited.join(' · ')}`
           {/* Insurance card upload hint */}
           <button
             onClick={() => cardInputRef.current?.click()}
-            style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '4px' }}
+            style={{ width: '100%', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '4px' }}
           >
-            <span style={{ fontSize: '14px', color: '#4A5A7A' }}>📷</span>
-            <span style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A' }}>Upload insurance card to auto-fill</span>
+            <span style={{ fontSize: '14px', color: '#94A3B8' }}>📷</span>
+            <span style={{ fontFamily: ff, fontSize: '11px', color: '#64748B' }}>Upload insurance card to auto-fill</span>
           </button>
 
           {divider()}
@@ -519,7 +519,7 @@ ${f.policy_sections_cited.join(' · ')}`
 
           {/* Payer selection */}
           <div style={{ marginBottom: '12px' }}>
-            <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '6px' }}>Insurance payer *</div>
+            <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '6px' }}>Insurance payer *</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {availablePayers.map(p => (
                 <button
@@ -528,9 +528,9 @@ ${f.policy_sections_cited.join(' · ')}`
                   style={{
                     padding: '5px 10px',
                     borderRadius: '99px',
-                    border: `1px solid ${payerId === p.id ? '#1B4FD8' : 'rgba(255,255,255,0.1)'}`,
+                    border: `1px solid ${payerId === p.id ? '#1B4FD8' : '#E2E8F0'}`,
                     background: payerId === p.id ? '#1B4FD8' : 'transparent',
-                    color: payerId === p.id ? '#fff' : '#6B7A9A',
+                    color: payerId === p.id ? '#fff' : '#475569',
                     fontFamily: ff,
                     fontSize: '11px',
                     fontWeight: 500,
@@ -548,13 +548,13 @@ ${f.policy_sections_cited.join(' · ')}`
 
           {/* Procedure type */}
           <div style={{ marginBottom: '12px' }}>
-            <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '6px' }}>Procedure type *</div>
+            <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '6px' }}>Procedure type *</div>
             <select
               value={procedureCategory}
               onChange={e => setProcedureCategory(e.target.value)}
-              style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+              style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#0F172A', fontFamily: ff, outline: 'none' }}
               onFocus={e => (e.currentTarget.style.borderColor = '#1B4FD8')}
-              onBlur={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+              onBlur={e => (e.currentTarget.style.borderColor = '#E2E8F0')}
             >
               <option value="">Select procedure...</option>
               {Object.entries(groups).map(([group, items]) => (
@@ -567,10 +567,10 @@ ${f.policy_sections_cited.join(' · ')}`
 
           {/* Urgency */}
           <div style={{ marginBottom: '12px' }}>
-            <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '6px' }}>Urgency</div>
+            <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '6px' }}>Urgency</div>
             <div style={{ display: 'flex', gap: '6px' }}>
               {(['routine', 'urgent', 'emergent'] as const).map(u => {
-                const colors = { routine: '#4A5A7A', urgent: '#D97706', emergent: '#EF5350' }
+                const colors = { routine: '#475569', urgent: '#D97706', emergent: '#EF5350' }
                 return (
                   <button
                     key={u}
@@ -580,9 +580,9 @@ ${f.policy_sections_cited.join(' · ')}`
                       flex: 1,
                       padding: '6px',
                       borderRadius: '6px',
-                      border: `1px solid ${urgency === u ? colors[u] : 'rgba(255,255,255,0.08)'}`,
+                      border: `1px solid ${urgency === u ? colors[u] : '#E2E8F0'}`,
                       background: urgency === u ? `${colors[u]}18` : 'transparent',
-                      color: urgency === u ? colors[u] : '#4A5A7A',
+                      color: urgency === u ? colors[u] : '#64748B',
                       fontFamily: ff,
                       fontSize: '11px',
                       fontWeight: 600,
@@ -599,14 +599,14 @@ ${f.policy_sections_cited.join(' · ')}`
 
           {/* Service date */}
           <div style={{ marginBottom: '12px' }}>
-            <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '4px' }}>Requested service date</div>
+            <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '4px' }}>Requested service date</div>
             <input
               type="date"
               value={serviceDate}
               onChange={e => setServiceDate(e.target.value)}
-              style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#ffffff', fontFamily: ff, outline: 'none', colorScheme: 'dark' }}
+              style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#0F172A', fontFamily: ff, outline: 'none', colorScheme: 'light' }}
             />
-            <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginTop: '3px' }}>Leave blank if date not yet scheduled</div>
+            <div style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8', marginTop: '3px' }}>Leave blank if date not yet scheduled</div>
           </div>
 
           {divider()}
@@ -616,14 +616,14 @@ ${f.policy_sections_cited.join(' · ')}`
             onClick={() => setRenderingExpanded(v => !v)}
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', width: '100%', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: ff, fontSize: '11px', color: '#6B7A9A' }}>Where will this be performed? (optional)</span>
-            <span style={{ color: '#4A5A7A', fontSize: '10px' }}>{renderingExpanded ? '▲' : '▼'}</span>
+            <span style={{ fontFamily: ff, fontSize: '11px', color: '#64748B' }}>Where will this be performed? (optional)</span>
+            <span style={{ color: '#94A3B8', fontSize: '10px' }}>{renderingExpanded ? '▲' : '▼'}</span>
           </button>
           {renderingExpanded && (
             <>
               {fieldInput(renderingFacility, setRenderingFacility, 'Rush University Medical Center')}
               {fieldInput(renderingProvider, setRenderingProvider, 'Rendering provider name')}
-              <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginTop: '-8px', marginBottom: '8px' }}>Only needed if different from your practice</div>
+              <div style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8', marginTop: '-8px', marginBottom: '8px' }}>Only needed if different from your practice</div>
             </>
           )}
 
@@ -635,8 +635,8 @@ ${f.policy_sections_cited.join(' · ')}`
                 onClick={() => setDrugSectionExpanded(v => !v)}
                 style={{ background: 'none', border: 'none', padding: '0 0 10px 0', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', width: '100%', textAlign: 'left' }}
               >
-                <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#7BA3FF', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Drug information *</span>
-                <span style={{ color: '#4A5A7A', fontSize: '10px', marginLeft: 'auto' }}>{drugSectionExpanded ? '▲' : '▼'}</span>
+                <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#1D4ED8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Drug information *</span>
+                <span style={{ color: '#94A3B8', fontSize: '10px', marginLeft: 'auto' }}>{drugSectionExpanded ? '▲' : '▼'}</span>
               </button>
               {drugSectionExpanded && (
                 <>
@@ -679,7 +679,7 @@ ${f.policy_sections_cited.join(' · ')}`
                     <select
                       value={drugRoute}
                       onChange={e => setDrugRoute(e.target.value)}
-                      style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                      style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#0F172A', fontFamily: ff, outline: 'none' }}
                     >
                       {['Oral', 'Subcutaneous injection', 'IV infusion', 'Intramuscular', 'Topical', 'Inhalation', 'Ophthalmic', 'Other'].map(r => (
                         <option key={r} value={r.toLowerCase()}>{r}</option>
@@ -691,7 +691,7 @@ ${f.policy_sections_cited.join(' · ')}`
                     <select
                       value={drugExceptionBasis}
                       onChange={e => setDrugExceptionBasis(e.target.value as DrugPAInfo['exception_basis'])}
-                      style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                      style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#0F172A', fontFamily: ff, outline: 'none' }}
                     >
                       <option value="step_therapy_failure">Step therapy failure</option>
                       <option value="medical_necessity">Medical necessity</option>
@@ -707,23 +707,23 @@ ${f.policy_sections_cited.join(' · ')}`
                 onClick={() => setStepTherapyExpanded(v => !v)}
                 style={{ background: 'none', border: 'none', padding: '0 0 10px 0', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', width: '100%', textAlign: 'left' }}
               >
-                <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#7BA3FF', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Step therapy history</span>
-                <span style={{ background: 'rgba(27,79,216,0.2)', color: '#7BA3FF', fontSize: '10px', fontFamily: ff, padding: '1px 6px', borderRadius: '99px', marginLeft: '6px' }}>{stepTherapy.filter(s => s.drug_name.trim()).length} drugs</span>
-                <span style={{ color: '#4A5A7A', fontSize: '10px', marginLeft: 'auto' }}>{stepTherapyExpanded ? '▲' : '▼'}</span>
+                <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#1D4ED8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Step therapy history</span>
+                <span style={{ background: 'rgba(27,79,216,0.1)', color: '#1D4ED8', fontSize: '10px', fontFamily: ff, padding: '1px 6px', borderRadius: '99px', marginLeft: '6px' }}>{stepTherapy.filter(s => s.drug_name.trim()).length} drugs</span>
+                <span style={{ color: '#94A3B8', fontSize: '10px', marginLeft: 'auto' }}>{stepTherapyExpanded ? '▲' : '▼'}</span>
               </button>
               {stepTherapyExpanded && (
                 <div>
-                  <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginBottom: '10px' }}>
+                  <div style={{ fontFamily: ff, fontSize: '10px', color: '#64748B', marginBottom: '10px' }}>
                     List all prior drugs tried — this is the most common reason drug PAs get denied.
                   </div>
                   {stepTherapy.map((entry, idx) => (
-                    <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', padding: '12px', marginBottom: '8px' }}>
+                    <div key={idx} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '12px', marginBottom: '8px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                        <span style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Drug {idx + 1}</span>
+                        <span style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Drug {idx + 1}</span>
                         {stepTherapy.length > 1 && (
                           <button
                             onClick={() => setStepTherapy(prev => prev.filter((_, i) => i !== idx))}
-                            style={{ background: 'none', border: 'none', color: '#4A5A7A', cursor: 'pointer', fontSize: '12px', padding: 0 }}
+                            style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', fontSize: '12px', padding: 0 }}
                           >✕</button>
                         )}
                       </div>
@@ -732,13 +732,13 @@ ${f.policy_sections_cited.join(' · ')}`
                           value={entry.drug_name}
                           onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, drug_name: e.target.value } : s))}
                           placeholder="Drug name"
-                          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                          style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#0F172A', fontFamily: ff, outline: 'none' }}
                         />
                         <input
                           value={entry.dose}
                           onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, dose: e.target.value } : s))}
                           placeholder="Dose (e.g. 15mg QD)"
-                          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                          style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#0F172A', fontFamily: ff, outline: 'none' }}
                         />
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '6px' }}>
@@ -747,20 +747,20 @@ ${f.policy_sections_cited.join(' · ')}`
                           value={entry.start_date ?? ''}
                           onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, start_date: e.target.value } : s))}
                           placeholder="Start date"
-                          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: entry.start_date ? '#ffffff' : '#4A5A7A', fontFamily: ff, outline: 'none', colorScheme: 'dark' }}
+                          style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: entry.start_date ? '#0F172A' : '#94A3B8', fontFamily: ff, outline: 'none', colorScheme: 'light' }}
                         />
                         <input
                           type="date"
                           value={entry.end_date ?? ''}
                           onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, end_date: e.target.value } : s))}
                           placeholder="End date"
-                          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: entry.end_date ? '#ffffff' : '#4A5A7A', fontFamily: ff, outline: 'none', colorScheme: 'dark' }}
+                          style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: entry.end_date ? '#0F172A' : '#94A3B8', fontFamily: ff, outline: 'none', colorScheme: 'light' }}
                         />
                       </div>
                       <select
                         value={entry.outcome}
                         onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, outcome: e.target.value as StepTherapyEntry['outcome'] } : s))}
-                        style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none', marginBottom: '6px' }}
+                        style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#0F172A', fontFamily: ff, outline: 'none', marginBottom: '6px' }}
                       >
                         <option value="inadequate_response">Inadequate response</option>
                         <option value="adverse_effect">Adverse effect / intolerance</option>
@@ -772,13 +772,13 @@ ${f.policy_sections_cited.join(' · ')}`
                         value={entry.reason_stopped ?? ''}
                         onChange={e => setStepTherapy(prev => prev.map((s, i) => i === idx ? { ...s, reason_stopped: e.target.value } : s))}
                         placeholder="Notes (optional)"
-                        style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                        style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#0F172A', fontFamily: ff, outline: 'none' }}
                       />
                     </div>
                   ))}
                   <button
                     onClick={() => setStepTherapy(prev => [...prev, { drug_name: '', dose: '', outcome: 'inadequate_response', reason_stopped: '' }])}
-                    style={{ width: '100%', background: 'rgba(27,79,216,0.1)', border: '1px dashed rgba(27,79,216,0.3)', borderRadius: '6px', padding: '8px', fontFamily: ff, fontSize: '11px', color: '#7BA3FF', cursor: 'pointer' }}
+                    style={{ width: '100%', background: 'rgba(27,79,216,0.06)', border: '1px dashed rgba(27,79,216,0.25)', borderRadius: '6px', padding: '8px', fontFamily: ff, fontSize: '11px', color: '#1D4ED8', cursor: 'pointer' }}
                   >
                     + Add another drug
                   </button>
@@ -790,8 +790,8 @@ ${f.policy_sections_cited.join(' · ')}`
                 onClick={() => setRenderingExpanded(v => !v)}
                 style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', width: '100%', textAlign: 'left' }}
               >
-                <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#7BA3FF', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Prescriber info *</span>
-                <span style={{ color: '#4A5A7A', fontSize: '10px', marginLeft: 'auto' }}>{renderingExpanded ? '▲' : '▼'}</span>
+                <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#1D4ED8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Prescriber info *</span>
+                <span style={{ color: '#94A3B8', fontSize: '10px', marginLeft: 'auto' }}>{renderingExpanded ? '▲' : '▼'}</span>
               </button>
               {renderingExpanded && (
                 <>
@@ -812,10 +812,10 @@ ${f.policy_sections_cited.join(' · ')}`
         </div>
 
         {/* ─── CENTER PANEL ─── */}
-        <div style={{ flex: 1, background: '#0B1020', padding: '20px 24px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ flex: 1, background: '#F8FAFC', padding: '20px 24px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
           {/* Tab bar */}
-          <div style={{ display: 'flex', gap: '0', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', gap: '0', borderBottom: '1px solid #E2E8F0', marginBottom: '16px' }}>
             {(['type', 'upload'] as const).map(t => (
               <button
                 key={t}
@@ -828,7 +828,7 @@ ${f.policy_sections_cited.join(' · ')}`
                   fontFamily: ff,
                   fontSize: '13px',
                   fontWeight: noteTab === t ? 600 : 400,
-                  color: noteTab === t ? '#ffffff' : '#6B7A9A',
+                  color: noteTab === t ? '#0F172A' : '#64748B',
                   cursor: 'pointer',
                   marginBottom: '-1px',
                 }}
@@ -849,19 +849,19 @@ ${f.policy_sections_cited.join(' · ')}`
                   flex: 1,
                   width: '100%',
                   minHeight: '240px',
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: '#FFFFFF',
+                  border: '1px solid #E2E8F0',
                   borderRadius: '10px',
                   padding: '16px',
                   fontSize: '14px',
-                  color: '#ffffff',
+                  color: '#0F172A',
                   fontFamily: 'monospace',
                   lineHeight: 1.7,
                   resize: 'none',
                   outline: 'none',
                 }}
                 onFocus={e => (e.currentTarget.style.borderColor = '#1B4FD8')}
-                onBlur={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+                onBlur={e => (e.currentTarget.style.borderColor = '#E2E8F0')}
               />
 
               {/* Smart checklist */}
@@ -872,8 +872,8 @@ ${f.policy_sections_cited.join(' · ')}`
                       const checked = item.check(note)
                       return (
                         <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                          <div style={{ width: '7px', height: '7px', borderRadius: '99px', background: checked ? '#22c55e' : '#2A3550', flexShrink: 0 }} />
-                          <span style={{ fontFamily: ff, fontSize: '11px', color: checked ? '#22c55e' : '#4A5A7A' }}>{item.label}</span>
+                          <div style={{ width: '7px', height: '7px', borderRadius: '99px', background: checked ? '#22c55e' : '#CBD5E1', flexShrink: 0 }} />
+                          <span style={{ fontFamily: ff, fontSize: '11px', color: checked ? '#22c55e' : '#64748B' }}>{item.label}</span>
                         </div>
                       )
                     })}
@@ -881,7 +881,7 @@ ${f.policy_sections_cited.join(' · ')}`
                       <span style={{ fontFamily: ff, fontSize: '11px', color: '#22c55e', fontWeight: 600 }}>Ready to generate ✓</span>
                     )}
                   </div>
-                  <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginTop: '6px' }}>{note.trim().length} characters</div>
+                  <div style={{ fontFamily: ff, fontSize: '11px', color: '#94A3B8', marginTop: '6px' }}>{note.trim().length} characters</div>
                 </div>
               )}
             </div>
@@ -896,8 +896,8 @@ ${f.policy_sections_cited.join(' · ')}`
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
                 style={{
-                  border: `2px dashed ${dragging ? '#1B4FD8' : 'rgba(255,255,255,0.1)'}`,
-                  background: dragging ? 'rgba(27,79,216,0.05)' : 'rgba(255,255,255,0.02)',
+                  border: `2px dashed ${dragging ? '#1B4FD8' : '#CBD5E1'}`,
+                  background: dragging ? 'rgba(27,79,216,0.04)' : '#FFFFFF',
                   borderRadius: '12px',
                   padding: '48px 24px',
                   textAlign: 'center',
@@ -905,20 +905,20 @@ ${f.policy_sections_cited.join(' · ')}`
                   transition: 'all 0.15s',
                 }}
               >
-                <div style={{ fontSize: '32px', color: '#4A5A7A', marginBottom: '12px' }}>⬆</div>
-                <div style={{ fontFamily: ff, fontSize: '15px', color: '#ffffff', marginBottom: '4px' }}>Drop your clinical document here</div>
-                <div style={{ fontFamily: ff, fontSize: '13px', color: '#6B7A9A', marginBottom: '8px' }}>or click to browse</div>
-                <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A' }}>Supports: Photos, PDFs, scanned documents</div>
+                <div style={{ fontSize: '32px', color: '#94A3B8', marginBottom: '12px' }}>⬆</div>
+                <div style={{ fontFamily: ff, fontSize: '15px', color: '#0F172A', marginBottom: '4px' }}>Drop your clinical document here</div>
+                <div style={{ fontFamily: ff, fontSize: '13px', color: '#64748B', marginBottom: '8px' }}>or click to browse</div>
+                <div style={{ fontFamily: ff, fontSize: '11px', color: '#94A3B8' }}>Supports: Photos, PDFs, scanned documents</div>
               </div>
 
               {extracting && (
-                <div style={{ marginTop: '16px', fontFamily: ff, fontSize: '13px', color: '#7BA3FF' }}>Reading your document...</div>
+                <div style={{ marginTop: '16px', fontFamily: ff, fontSize: '13px', color: '#1D4ED8' }}>Reading your document...</div>
               )}
 
               {extraction && !extracting && (
-                <div style={{ marginTop: '16px', background: 'rgba(27,79,216,0.06)', border: '1px solid rgba(27,79,216,0.12)', borderRadius: '10px', padding: '16px' }}>
+                <div style={{ marginTop: '16px', background: 'rgba(27,79,216,0.04)', border: '1px solid rgba(27,79,216,0.12)', borderRadius: '10px', padding: '16px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                    <div style={{ fontFamily: ff, fontSize: '12px', fontWeight: 600, color: '#ffffff' }}>Extracted from your document</div>
+                    <div style={{ fontFamily: ff, fontSize: '12px', fontWeight: 600, color: '#0F172A' }}>Extracted from your document</div>
                     <div style={{
                       fontFamily: ff, fontSize: '10px', fontWeight: 600, padding: '2px 8px', borderRadius: '99px',
                       background: extraction.extraction_confidence === 'high' ? 'rgba(34,197,94,0.15)' : extraction.extraction_confidence === 'medium' ? 'rgba(251,191,36,0.15)' : 'rgba(239,68,68,0.15)',
@@ -934,17 +934,17 @@ ${f.policy_sections_cited.join(' · ')}`
                     ['Symptoms', extraction.symptoms],
                   ].filter(([, v]) => v).map(([label, value]) => (
                     <div key={label as string} style={{ display: 'flex', gap: '8px', marginBottom: '6px' }}>
-                      <span style={{ fontFamily: ff, fontSize: '11px', color: '#6B7A9A', minWidth: '70px' }}>{label}</span>
-                      <span style={{ fontFamily: ff, fontSize: '11px', color: '#ffffff' }}>{value}</span>
+                      <span style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', minWidth: '70px' }}>{label}</span>
+                      <span style={{ fontFamily: ff, fontSize: '11px', color: '#0F172A' }}>{value}</span>
                     </div>
                   ))}
-                  <div style={{ fontFamily: ff, fontSize: '10px', color: '#6B7A9A', marginTop: '8px', marginBottom: '4px' }}>Full text extracted (editable in Type tab)</div>
-                  <div style={{ maxHeight: '80px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '10px', color: '#6B7A9A', background: 'rgba(0,0,0,0.2)', borderRadius: '4px', padding: '6px' }}>
+                  <div style={{ fontFamily: ff, fontSize: '10px', color: '#64748B', marginTop: '8px', marginBottom: '4px' }}>Full text extracted (editable in Type tab)</div>
+                  <div style={{ maxHeight: '80px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '10px', color: '#64748B', background: 'rgba(0,0,0,0.04)', borderRadius: '4px', padding: '6px' }}>
                     {extraction.raw_text}
                   </div>
                   <button
                     onClick={() => setNoteTab('type')}
-                    style={{ marginTop: '10px', background: 'none', border: 'none', color: '#7BA3FF', fontFamily: ff, fontSize: '11px', cursor: 'pointer', padding: 0 }}
+                    style={{ marginTop: '10px', background: 'none', border: 'none', color: '#1D4ED8', fontFamily: ff, fontSize: '11px', cursor: 'pointer', padding: 0 }}
                   >
                     Edit extracted text →
                   </button>
@@ -956,7 +956,7 @@ ${f.policy_sections_cited.join(' · ')}`
           {/* Generate button — sticky bottom of center panel */}
           <div style={{ marginTop: '16px', flexShrink: 0 }}>
             {isAtQuota ? (
-              <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', padding: '14px', textAlign: 'center' }}>
+              <div style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', padding: '14px', textAlign: 'center' }}>
                 <div style={{ fontFamily: ff, fontSize: '13px', color: '#EF5350', marginBottom: '10px' }}>You&apos;ve used all free prior auths</div>
                 <a href="/dashboard/settings" style={{ background: '#1B4FD8', color: '#ffffff', textDecoration: 'none', padding: '8px 16px', borderRadius: '6px', fontFamily: ff, fontSize: '12px', fontWeight: 600 }}>
                   Upgrade to Pro →
@@ -969,8 +969,8 @@ ${f.policy_sections_cited.join(' · ')}`
                   disabled={!canGenerate}
                   style={{
                     width: '100%',
-                    background: canGenerate ? '#1B4FD8' : 'rgba(27,79,216,0.3)',
-                    color: canGenerate ? '#ffffff' : 'rgba(255,255,255,0.3)',
+                    background: canGenerate ? '#1B4FD8' : '#E2E8F0',
+                    color: canGenerate ? '#ffffff' : '#94A3B8',
                     border: 'none',
                     borderRadius: '10px',
                     padding: '16px',
@@ -993,7 +993,7 @@ ${f.policy_sections_cited.join(' · ')}`
                 {loadingPhase === 'error' && (
                   <div style={{ marginTop: '8px', fontFamily: ff, fontSize: '12px', color: '#EF5350' }}>
                     {error}{' '}
-                    <button onClick={() => setLoadingPhase('idle')} style={{ background: 'none', border: 'none', color: '#7BA3FF', cursor: 'pointer', fontFamily: ff, fontSize: '12px' }}>Try again</button>
+                    <button onClick={() => setLoadingPhase('idle')} style={{ background: 'none', border: 'none', color: '#1D4ED8', cursor: 'pointer', fontFamily: ff, fontSize: '12px' }}>Try again</button>
                   </div>
                 )}
               </>
@@ -1002,7 +1002,7 @@ ${f.policy_sections_cited.join(' · ')}`
         </div>
 
         {/* ─── RIGHT PANEL ─── */}
-        <div className="right-panel" style={{ width: '440px', flexShrink: 0, background: '#060C16', borderLeft: '1px solid rgba(255,255,255,0.05)', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+        <div className="right-panel" style={{ width: '440px', flexShrink: 0, background: '#FFFFFF', borderLeft: '1px solid #E2E8F0', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
 
           {/* Renewal banner */}
           {searchParams.get('renew') === '1' && (
@@ -1011,7 +1011,7 @@ ${f.policy_sections_cited.join(' · ')}`
               <div>
                 <div style={{ fontFamily: ff, fontSize: '12px', fontWeight: 600, color: '#4ade80', marginBottom: '1px' }}>Renewal — patient info pre-filled</div>
                 {searchParams.get('prev_auth') && (
-                  <div style={{ fontFamily: ff, fontSize: '11px', color: '#6B7A9A' }}>Previous auth: {searchParams.get('prev_auth')}</div>
+                  <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B' }}>Previous auth: {searchParams.get('prev_auth')}</div>
                 )}
               </div>
             </div>
@@ -1021,8 +1021,8 @@ ${f.policy_sections_cited.join(' · ')}`
           {loadingPhase === 'idle' && !result && (
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '40px' }}>
               <div style={{ fontSize: '40px', opacity: 0.15, marginBottom: '16px' }}>📋</div>
-              <div style={{ fontFamily: ff, fontSize: '14px', color: '#4A5A7A', marginBottom: '6px' }}>Your complete PA form will appear here</div>
-              <div style={{ fontFamily: ff, fontSize: '12px', color: '#2A3550' }}>Fill in patient details and the clinical note to get started</div>
+              <div style={{ fontFamily: ff, fontSize: '14px', color: '#64748B', marginBottom: '6px' }}>Your complete PA form will appear here</div>
+              <div style={{ fontFamily: ff, fontSize: '12px', color: '#94A3B8' }}>Fill in patient details and the clinical note to get started</div>
             </div>
           )}
 
@@ -1030,7 +1030,7 @@ ${f.policy_sections_cited.join(' · ')}`
           {loadingPhase === 'generating' && (
             <div style={{ padding: '20px' }}>
               {[100, 80, 90, 60, 75, 85, 65].map((w, i) => (
-                <div key={i} className="skeleton" style={{ height: '12px', background: 'rgba(255,255,255,0.06)', borderRadius: '3px', width: `${w}%`, marginBottom: '10px' }} />
+                <div key={i} className="skeleton" style={{ height: '12px', background: '#E2E8F0', borderRadius: '3px', width: `${w}%`, marginBottom: '10px' }} />
               ))}
             </div>
           )}
@@ -1039,12 +1039,12 @@ ${f.policy_sections_cited.join(' · ')}`
           {result && (loadingPhase === 'done' || loadingPhase === 'idle') && (
             <div className="pa-form-output" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               {/* Form header */}
-              <div style={{ background: '#111827', padding: '16px 20px', borderRadius: '0', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ background: '#F8FAFC', padding: '16px 20px', borderRadius: '0', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
-                  <div style={{ fontFamily: ff, fontWeight: 700, fontSize: '11px', color: '#6B7A9A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Prior Authorization Request</div>
-                  <div style={{ fontFamily: ff, fontSize: '16px', fontWeight: 600, color: '#7BA3FF' }}>{result.form.payer_name}</div>
+                  <div style={{ fontFamily: ff, fontWeight: 700, fontSize: '11px', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Prior Authorization Request</div>
+                  <div style={{ fontFamily: ff, fontSize: '16px', fontWeight: 600, color: '#1D4ED8' }}>{result.form.payer_name}</div>
                 </div>
-                <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', textAlign: 'right' }}>
+                <div style={{ fontFamily: ff, fontSize: '11px', color: '#94A3B8', textAlign: 'right' }}>
                   {new Date(result.form.generated_at).toLocaleDateString()}
                 </div>
               </div>
@@ -1052,9 +1052,9 @@ ${f.policy_sections_cited.join(' · ')}`
               {/* Approval likelihood banner */}
               {(() => {
                 const cfg = {
-                  high: { icon: '✓', text: `High likelihood of approval — ${result.form.criteria_met} of ${result.form.criteria_total} criteria met`, bg: 'rgba(22,163,74,0.10)', border: 'rgba(22,163,74,0.2)', color: '#4ade80' },
-                  medium: { icon: '⚠', text: `Review recommended — ${result.form.criteria_met} of ${result.form.criteria_total} criteria met`, bg: 'rgba(217,119,6,0.10)', border: 'rgba(217,119,6,0.2)', color: '#fbbf24' },
-                  low: { icon: '✗', text: `Low likelihood — consider peer-to-peer review`, bg: 'rgba(239,68,68,0.10)', border: 'rgba(239,68,68,0.2)', color: '#f87171' },
+                  high: { icon: '✓', text: `High likelihood of approval — ${result.form.criteria_met} of ${result.form.criteria_total} criteria met`, bg: 'rgba(22,163,74,0.08)', border: 'rgba(22,163,74,0.2)', color: '#16a34a' },
+                  medium: { icon: '⚠', text: `Review recommended — ${result.form.criteria_met} of ${result.form.criteria_total} criteria met`, bg: 'rgba(217,119,6,0.08)', border: 'rgba(217,119,6,0.2)', color: '#d97706' },
+                  low: { icon: '✗', text: `Low likelihood — consider peer-to-peer review`, bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)', color: '#dc2626' },
                 }[result.form.approval_likelihood]
                 return (
                   <div style={{ background: cfg.bg, borderBottom: `1px solid ${cfg.border}`, padding: '10px 20px', fontFamily: ff, fontSize: '12px', fontWeight: 500, color: cfg.color }}>
@@ -1088,9 +1088,9 @@ ${f.policy_sections_cited.join(' · ')}`
                     <FormField label="Phone" value={result.form.practice_phone} />
                     <FormField label="Fax" value={result.form.practice_fax || '—'} />
                   </Grid2>
-                  <div style={{ fontFamily: ff, fontSize: '10px', color: '#2A3550', marginTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
+                  <div style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8', marginTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
                     <span>🔒 Auto-filled from your practice settings</span>
-                    <a href="/dashboard/settings" style={{ color: '#4A5A7A', textDecoration: 'none' }}>Edit in Settings →</a>
+                    <a href="/dashboard/settings" style={{ color: '#64748B', textDecoration: 'none' }}>Edit in Settings →</a>
                   </div>
                 </FormSection>
 
@@ -1106,9 +1106,9 @@ ${f.policy_sections_cited.join(' · ')}`
 
                 {/* Clinical justification */}
                 <FormSection label="Clinical justification">
-                  <p style={{ fontFamily: ff, fontSize: '13px', color: '#C9D1D9', lineHeight: 1.75, margin: 0 }}>{result.form.clinical_justification}</p>
+                  <p style={{ fontFamily: ff, fontSize: '13px', color: '#334155', lineHeight: 1.75, margin: 0 }}>{result.form.clinical_justification}</p>
                   {result.form.policy_sections_cited.length > 0 && (
-                    <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginTop: '6px' }}>
+                    <div style={{ fontFamily: ff, fontSize: '10px', color: '#64748B', marginTop: '6px' }}>
                       Per {result.form.payer_name} policy: {result.form.policy_sections_cited.slice(0, 2).join(' · ')}
                     </div>
                   )}
@@ -1116,12 +1116,12 @@ ${f.policy_sections_cited.join(' · ')}`
 
                 {/* Medical necessity */}
                 <FormSection label="Medical necessity">
-                  <p style={{ fontFamily: ff, fontSize: '13px', color: '#C9D1D9', lineHeight: 1.75, margin: 0 }}>{result.form.medical_necessity}</p>
+                  <p style={{ fontFamily: ff, fontSize: '13px', color: '#334155', lineHeight: 1.75, margin: 0 }}>{result.form.medical_necessity}</p>
                 </FormSection>
 
                 {/* Supporting evidence */}
                 <FormSection label="Supporting evidence">
-                  <div style={{ fontFamily: ff, fontSize: '13px', color: '#C9D1D9', lineHeight: 1.75, whiteSpace: 'pre-line' }}>{result.form.supporting_evidence}</div>
+                  <div style={{ fontFamily: ff, fontSize: '13px', color: '#334155', lineHeight: 1.75, whiteSpace: 'pre-line' }}>{result.form.supporting_evidence}</div>
                 </FormSection>
 
                 {/* Criteria met */}
@@ -1131,8 +1131,8 @@ ${f.policy_sections_cited.join(' · ')}`
                       <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '6px', alignItems: 'flex-start' }}>
                         <span style={{ color: c.met ? '#22c55e' : '#ef4444', fontSize: '12px', flexShrink: 0 }}>{c.met ? '✓' : '✗'}</span>
                         <div>
-                          <div style={{ fontFamily: ff, fontSize: '12px', color: c.met ? '#C9D1D9' : '#6B7A9A' }}>{c.criterion}</div>
-                          {c.evidence && <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A' }}>{c.evidence}</div>}
+                          <div style={{ fontFamily: ff, fontSize: '12px', color: c.met ? '#334155' : '#94A3B8' }}>{c.criterion}</div>
+                          {c.evidence && <div style={{ fontFamily: ff, fontSize: '10px', color: '#64748B' }}>{c.evidence}</div>}
                         </div>
                       </div>
                     ))}
@@ -1144,7 +1144,7 @@ ${f.policy_sections_cited.join(' · ')}`
                   <FormSection label="Policy references">
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                       {result.form.policy_sections_cited.map((s, i) => (
-                        <span key={i} style={{ fontFamily: ff, fontSize: '10px', background: 'rgba(27,79,216,0.12)', color: '#7BA3FF', border: '1px solid rgba(27,79,216,0.2)', borderRadius: '4px', padding: '2px 8px' }}>
+                        <span key={i} style={{ fontFamily: ff, fontSize: '10px', background: 'rgba(27,79,216,0.08)', color: '#1D4ED8', border: '1px solid rgba(27,79,216,0.15)', borderRadius: '4px', padding: '2px 8px' }}>
                           {s}
                         </span>
                       ))}
@@ -1163,14 +1163,14 @@ ${f.policy_sections_cited.join(' · ')}`
               </div>
 
               {/* Form footer */}
-              <div style={{ background: '#111827', padding: '12px 20px', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
-                <div style={{ fontFamily: ff, fontSize: '10px', color: '#2A3550' }}>
+              <div style={{ background: '#F8FAFC', padding: '12px 20px', borderTop: '1px solid #E2E8F0', textAlign: 'center' }}>
+                <div style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8' }}>
                   Generated by Authflow · Prior auths processed in-memory only · No PHI stored
                 </div>
               </div>
 
               {/* Action bar */}
-              <div className="action-bar" style={{ background: '#060C16', borderTop: '1px solid rgba(255,255,255,0.08)', padding: '14px 20px', flexShrink: 0 }}>
+              <div className="action-bar" style={{ background: '#FFFFFF', borderTop: '1px solid #E2E8F0', padding: '14px 20px', flexShrink: 0 }}>
                 <div style={{ display: 'flex', gap: '8px', marginBottom: isSubmitted ? '12px' : '0' }}>
                   <ActionBtn onClick={handleCopyAll} icon="⎘" label="Copy all" />
                   <ActionBtn onClick={() => window.print()} icon="🖨" label="Print / Fax" />
@@ -1190,14 +1190,14 @@ ${f.policy_sections_cited.join(' · ')}`
                       value={authNumber}
                       onChange={e => setAuthNumber(e.target.value)}
                       placeholder="Authorization number (from payer)"
-                      style={{ flex: 1, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '8px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                      style={{ flex: 1, background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '8px 10px', fontSize: '12px', color: '#0F172A', fontFamily: ff, outline: 'none' }}
                       onFocus={e => (e.currentTarget.style.borderColor = '#1B4FD8')}
-                      onBlur={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+                      onBlur={e => (e.currentTarget.style.borderColor = '#E2E8F0')}
                     />
                     <button
                       onClick={handleSaveAuth}
                       disabled={savingAuth || !authNumber.trim()}
-                      style={{ background: authSaved ? 'rgba(34,197,94,0.15)' : 'rgba(27,79,216,0.2)', border: '1px solid rgba(27,79,216,0.3)', borderRadius: '6px', padding: '8px 12px', fontFamily: ff, fontSize: '12px', color: authSaved ? '#22c55e' : '#7BA3FF', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+                      style={{ background: authSaved ? 'rgba(34,197,94,0.1)' : 'rgba(27,79,216,0.08)', border: '1px solid rgba(27,79,216,0.2)', borderRadius: '6px', padding: '8px 12px', fontFamily: ff, fontSize: '12px', color: authSaved ? '#22c55e' : '#1D4ED8', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
                     >
                       {authSaved ? '✓ Authorized' : 'Save'}
                     </button>
@@ -1210,12 +1210,12 @@ ${f.policy_sections_cited.join(' · ')}`
       </div>
 
       {showUpgrade && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999 }}>
-          <div style={{ background: '#111827', borderRadius: '16px', padding: '32px', maxWidth: '380px', textAlign: 'center' }}>
-            <div style={{ fontFamily: ff, fontSize: '18px', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}>Quota reached</div>
-            <div style={{ fontFamily: ff, fontSize: '14px', color: '#6B7A9A', marginBottom: '24px' }}>Upgrade to Pro for unlimited prior authorizations.</div>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999 }}>
+          <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '32px', maxWidth: '380px', textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+            <div style={{ fontFamily: ff, fontSize: '18px', fontWeight: 700, color: '#0F172A', marginBottom: '12px' }}>Quota reached</div>
+            <div style={{ fontFamily: ff, fontSize: '14px', color: '#64748B', marginBottom: '24px' }}>Upgrade to Pro for unlimited prior authorizations.</div>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-              <button onClick={() => setShowUpgrade(false)} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '10px 20px', color: '#6B7A9A', cursor: 'pointer', fontFamily: ff }}>Cancel</button>
+              <button onClick={() => setShowUpgrade(false)} style={{ background: 'transparent', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '10px 20px', color: '#475569', cursor: 'pointer', fontFamily: ff }}>Cancel</button>
               <a href="/dashboard/settings" style={{ background: '#1B4FD8', color: '#ffffff', textDecoration: 'none', borderRadius: '8px', padding: '10px 20px', fontFamily: ff, fontWeight: 600, fontSize: '14px' }}>Upgrade →</a>
             </div>
           </div>
@@ -1229,8 +1229,8 @@ ${f.policy_sections_cited.join(' · ')}`
 
 function FormSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="pa-form-section" style={{ marginBottom: '14px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-      <div className="pa-form-label" style={{ fontFamily: 'var(--font-inter)', fontSize: '10px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>{label}</div>
+    <div className="pa-form-section" style={{ marginBottom: '14px', paddingBottom: '14px', borderBottom: '1px solid #EEF2F7' }}>
+      <div className="pa-form-label" style={{ fontFamily: 'var(--font-inter)', fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>{label}</div>
       {children}
     </div>
   )
@@ -1243,8 +1243,8 @@ function Grid2({ children }: { children: React.ReactNode }) {
 function FormField({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div style={{ fontFamily: 'var(--font-inter)', fontSize: '10px', color: '#4A5A7A', marginBottom: '2px' }}>{label}</div>
-      <div className="pa-form-value" style={{ fontFamily: 'var(--font-inter)', fontSize: '12px', color: '#ffffff' }}>{value}</div>
+      <div style={{ fontFamily: 'var(--font-inter)', fontSize: '10px', color: '#94A3B8', marginBottom: '2px' }}>{label}</div>
+      <div className="pa-form-value" style={{ fontFamily: 'var(--font-inter)', fontSize: '12px', color: '#0F172A' }}>{value}</div>
     </div>
   )
 }
@@ -1255,8 +1255,8 @@ function ActionBtn({ onClick, icon, label, primary }: { onClick: () => void; ico
     <button
       onClick={() => { onClick(); if (!primary) { setActive(true); setTimeout(() => setActive(false), 2000) } }}
       style={{
-        background: primary ? 'rgba(27,79,216,0.15)' : 'rgba(255,255,255,0.04)',
-        border: primary ? '1px solid rgba(27,79,216,0.3)' : '1px solid rgba(255,255,255,0.08)',
+        background: primary ? 'rgba(27,79,216,0.08)' : '#F8FAFC',
+        border: primary ? '1px solid rgba(27,79,216,0.2)' : '1px solid #E2E8F0',
         borderRadius: '6px',
         padding: '8px 12px',
         display: 'flex',
@@ -1265,7 +1265,7 @@ function ActionBtn({ onClick, icon, label, primary }: { onClick: () => void; ico
         cursor: 'pointer',
         fontFamily: 'var(--font-inter)',
         fontSize: '12px',
-        color: primary ? '#7BA3FF' : active ? '#22c55e' : '#ffffff',
+        color: primary ? '#1D4ED8' : active ? '#22c55e' : '#334155',
         transition: 'color 0.2s',
       }}
     >
