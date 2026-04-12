@@ -12,6 +12,7 @@ function AuthCallbackInner() {
     const code = searchParams.get('code')
 
     if (code) {
+      // PKCE flow
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (!error) router.replace('/dashboard')
         else router.replace('/signin?error=auth_failed')
@@ -19,31 +20,19 @@ function AuthCallbackInner() {
       return
     }
 
-    // Implicit flow — listen for auth state change which fires when hash token is parsed
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        subscription.unsubscribe()
-        router.replace('/dashboard')
-      }
-    })
+    // Implicit flow — manually parse hash fragment
+    const hash = window.location.hash.substring(1)
+    const params = new URLSearchParams(hash)
+    const accessToken = params.get('access_token')
+    const refreshToken = params.get('refresh_token')
 
-    // Also check if session already exists
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        subscription.unsubscribe()
-        router.replace('/dashboard')
-      }
-    })
-
-    // Fallback timeout after 6 seconds
-    const timeout = setTimeout(() => {
-      subscription.unsubscribe()
+    if (accessToken && refreshToken) {
+      supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).then(({ error }) => {
+        if (!error) router.replace('/dashboard')
+        else router.replace('/signin?error=auth_failed')
+      })
+    } else {
       router.replace('/signin?error=auth_failed')
-    }, 6000)
-
-    return () => {
-      subscription.unsubscribe()
-      clearTimeout(timeout)
     }
   }, [router, searchParams])
 
