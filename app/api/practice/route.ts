@@ -111,3 +111,5 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ success: false, error: 'Failed to update practice profile' }, { status: 503 })
   }
 }
+
+export const dynamic = 'force-dynamic'
