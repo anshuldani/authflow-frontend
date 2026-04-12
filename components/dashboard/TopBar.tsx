@@ -94,7 +94,6 @@ export default function TopBar({ title, showUpgrade = false }: TopBarProps) {
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
-            onFocus={() => { if (results.length > 0) setOpen(true) }}
             placeholder="Search by patient name, member ID..."
             style={{
               width: '100%',
@@ -108,7 +107,7 @@ export default function TopBar({ title, showUpgrade = false }: TopBarProps) {
               outline: 'none',
               transition: 'border-color 0.15s, box-shadow 0.15s',
             }}
-            onFocus={e => { e.currentTarget.style.borderColor = '#1A56DB'; e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(26,86,219,0.1)' }}
+            onFocus={e => { if (results.length > 0) setOpen(true); e.currentTarget.style.borderColor = '#1A56DB'; e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(26,86,219,0.1)' }}
             onBlur={e => { e.currentTarget.style.borderColor = '#E2E8F0'; e.currentTarget.style.background = '#F4F7FB'; e.currentTarget.style.boxShadow = 'none' }}
           />
           {searching && (
