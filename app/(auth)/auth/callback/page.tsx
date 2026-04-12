@@ -17,10 +17,19 @@ function AuthCallbackInner() {
         else router.replace('/signin?error=auth_failed')
       })
     } else {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) router.replace('/dashboard')
-        else router.replace('/signin?error=auth_failed')
-      })
+      // Implicit flow — wait for Supabase to parse the hash fragment
+      const check = (attempts: number) => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (session) {
+            router.replace('/dashboard')
+          } else if (attempts > 0) {
+            setTimeout(() => check(attempts - 1), 500)
+          } else {
+            router.replace('/signin?error=auth_failed')
+          }
+        })
+      }
+      setTimeout(() => check(5), 300)
     }
   }, [router, searchParams])
 
