@@ -112,7 +112,7 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
   const handleExportPDF = useCallback(async () => {
     setExporting(true)
     try {
-      const cpf = pa.complete_pa_form as Record<string, unknown> | null
+      const cpf = pa.complete_pa_form as unknown as Record<string, unknown> | null
       const res = await fetch('/api/export-pdf', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
