@@ -53,6 +53,8 @@ export async function POST(request: Request) {
       visit_date: (rawResult.visit_date as string) ?? undefined,
       raw_text: (rawResult.raw_text as string) ?? undefined,
       extraction_confidence: ((rawResult.extraction_confidence as string) ?? 'low') as 'high' | 'medium' | 'low',
+      generic_drug_name: (rawResult.generic_drug_name as string) ?? undefined,
+      prescriber_npi: (rawResult.prescriber_npi as string) ?? undefined,
     }
 
     return NextResponse.json({ success: true, extraction: result })

@@ -376,6 +376,8 @@ export default function NewPAPage() {
         if (data.extraction.raw_text) setNote(data.extraction.raw_text)
         if (data.extraction.patient_name && !patientName) setPatientName(data.extraction.patient_name)
         if (data.extraction.patient_dob && !patientDob) setPatientDob(data.extraction.patient_dob)
+        if (data.extraction.generic_drug_name) setDrugGenericName(data.extraction.generic_drug_name)
+        if (data.extraction.prescriber_npi) setPrescriberNpi(data.extraction.prescriber_npi)
       }
     } catch { /* silent */ }
     setExtracting(false)

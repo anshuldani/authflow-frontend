@@ -266,6 +266,8 @@ export async function extractClinicalDocument(
       'Sulfasalazine — discontinued due to rash and GI intolerance',
     ],
     clinical_findings: 'Symmetric polyarthritis MCP/PIP/wrist/knee; 14 tender joints, 9 swollen joints; R knee effusion; 90-min AM stiffness; RF 148 U/mL; Anti-CCP >250 U/mL; DAS28-CRP 5.4; CDAI 28; HAQ-DI 1.625; QFT-Gold negative 04/01/2026; Hep B/C negative; β-hCG negative.',
+    generic_drug_name: 'adalimumab',
+    prescriber_npi: '1346798520',
     raw_text: 'Patient: Sarah J. Martinez DOB: 03/14/1987. Physician: Aniket Rao, MD — Rheumatology (NPI 1346798520). Date of encounter: 04/08/2026. Chief Complaint: Worsening joint pain and morning stiffness despite current DMARD therapy. History: Seropositive RA diagnosed 02/2023 (M05.79). Prior medications tried: Methotrexate 25mg SQ weekly for 15 months — inadequate response; Hydroxychloroquine — discontinued inadequate response; Sulfasalazine — discontinued due to rash and GI intolerance; Naproxen — discontinued. Medication duration: 15 months of methotrexate therapy at maximum tolerated dose. DAS28-CRP 5.4, CDAI 28, HAQ-DI 1.625, RF 148, Anti-CCP >250. QFT-Gold negative. Assessment: Moderate-to-severe seropositive RA with persistent high disease activity despite 15 months methotrexate therapy. Meets ACR 2021 criteria for TNF-inhibitor biologic. Medical necessity: Biologic therapy is medically necessary and clinically indicated. Initiate Adalimumab (Humira) 40 mg SQ q2wk; continue MTX 15 mg SQ weekly. Specialist rheumatologist: Aniket Rao, MD.',
     extraction_confidence: 'high',
   }

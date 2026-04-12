@@ -210,6 +210,8 @@ export interface ExtractedClinicalData {
   visit_date?: string
   raw_text?: string
   extraction_confidence: 'high' | 'medium' | 'low'
+  generic_drug_name?: string
+  prescriber_npi?: string
 }
 
 export interface CompletePAForm {
