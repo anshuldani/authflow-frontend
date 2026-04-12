@@ -70,11 +70,19 @@ export async function POST(request: Request) {
     let generatedForm: GeneratedForm
 
     if (isBackendAvailable()) {
-      const { data: { session } } = await supabase.auth.getSession()
-      generatedForm = await generatePriorAuthViaBackend(
-        clinicalNote, payerId, procedureName, procedureCategory ?? '',
-        urgency ?? 'routine', patientInfo, session?.access_token
-      )
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        generatedForm = await generatePriorAuthViaBackend(
+          clinicalNote, payerId, procedureName, procedureCategory ?? '',
+          urgency ?? 'routine', patientInfo, session?.access_token
+        )
+      } catch (backendErr) {
+        console.warn('[/api/generate] Backend unavailable, falling back to Claude direct:', backendErr)
+        generatedForm = await generatePriorAuth(
+          clinicalNote, payerId, procedureName, procedureCategory ?? '',
+          urgency ?? 'routine', patientInfo, drugPAInfo
+        )
+      }
     } else {
       generatedForm = await generatePriorAuth(
         clinicalNote, payerId, procedureName, procedureCategory ?? '',
