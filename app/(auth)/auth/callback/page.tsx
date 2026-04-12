@@ -16,20 +16,34 @@ function AuthCallbackInner() {
         if (!error) router.replace('/dashboard')
         else router.replace('/signin?error=auth_failed')
       })
-    } else {
-      // Implicit flow — wait for Supabase to parse the hash fragment
-      const check = (attempts: number) => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-          if (session) {
-            router.replace('/dashboard')
-          } else if (attempts > 0) {
-            setTimeout(() => check(attempts - 1), 500)
-          } else {
-            router.replace('/signin?error=auth_failed')
-          }
-        })
+      return
+    }
+
+    // Implicit flow — listen for auth state change which fires when hash token is parsed
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        subscription.unsubscribe()
+        router.replace('/dashboard')
       }
-      setTimeout(() => check(5), 300)
+    })
+
+    // Also check if session already exists
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        subscription.unsubscribe()
+        router.replace('/dashboard')
+      }
+    })
+
+    // Fallback timeout after 6 seconds
+    const timeout = setTimeout(() => {
+      subscription.unsubscribe()
+      router.replace('/signin?error=auth_failed')
+    }, 6000)
+
+    return () => {
+      subscription.unsubscribe()
+      clearTimeout(timeout)
     }
   }, [router, searchParams])
 
