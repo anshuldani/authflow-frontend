@@ -158,13 +158,12 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
         }),
       })
       if (!res.ok) throw new Error('PDF export failed')
-      const blob = await res.blob()
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `PA_${pa.payer}_${pa.patient_name ?? 'form'}.pdf`.replace(/\s+/g, '_')
-      a.click()
-      URL.revokeObjectURL(url)
+      const html = await res.text()
+      const win = window.open('', '_blank')
+      if (win) {
+        win.document.write(html)
+        win.document.close()
+      }
     } catch (e) {
       console.error('PDF export error:', e)
       alert('PDF export failed. Please try again.')
