@@ -57,7 +57,7 @@ export default function AppealGenerator({ pa, onDone }: AppealGeneratorProps) {
   }
 
   return (
-    <div style={{ padding: '16px', background: 'rgba(27,79,216,0.05)', border: '1px solid rgba(27,79,216,0.15)', borderRadius: '8px', marginTop: '8px' }}>
+    <div style={{ padding: '16px', background: '#EBF2FF', border: '1px solid #BFDBFE', borderRadius: '8px', marginTop: '8px' }}>
       {!result ? (
         <>
           <div style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', fontWeight: 600, color: '#1B4FD8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
@@ -67,7 +67,7 @@ export default function AppealGenerator({ pa, onDone }: AppealGeneratorProps) {
             value={denialReason}
             onChange={e => setDenialReason(e.target.value)}
             placeholder="e.g. 'Conservative treatment not adequately documented as exhausted per clinical criteria §3.1'"
-            style={{ width: '100%', minHeight: '80px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '10px', fontSize: '12px', color: '#ffffff', fontFamily: 'var(--font-inter)', resize: 'vertical', outline: 'none', marginBottom: '10px' }}
+            style={{ width: '100%', minHeight: '80px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '10px', fontSize: '12px', color: '#0F172A', fontFamily: 'var(--font-inter)', resize: 'vertical', outline: 'none', marginBottom: '10px' }}
           />
           {error && <div style={{ fontFamily: 'var(--font-inter)', fontSize: '12px', color: '#EF5350', marginBottom: '8px' }}>{error}</div>}
           <button
@@ -83,20 +83,20 @@ export default function AppealGenerator({ pa, onDone }: AppealGeneratorProps) {
           <div style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', fontWeight: 600, color: '#1B4FD8', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
             Appeal Letter — {pa.payer}
           </div>
-          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '6px', padding: '16px', fontFamily: 'monospace', fontSize: '12px', color: '#8899BB', lineHeight: 1.7, whiteSpace: 'pre-wrap', maxHeight: '300px', overflowY: 'auto', marginBottom: '12px' }}>
+          <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '16px', fontFamily: 'monospace', fontSize: '12px', color: '#334155', lineHeight: 1.7, whiteSpace: 'pre-wrap', maxHeight: '300px', overflowY: 'auto', marginBottom: '12px' }}>
             {result.generated_appeal}
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
               onClick={handleCopy}
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '7px 12px', fontSize: '12px', color: copied ? '#66BB6A' : '#ffffff', cursor: 'pointer', fontFamily: 'var(--font-inter)' }}
+              style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '7px 12px', fontSize: '12px', color: copied ? '#16A34A' : '#475569', cursor: 'pointer', fontFamily: 'var(--font-inter)' }}
             >
               {copied ? '✓ Copied' : 'Copy letter'}
             </button>
             <button
               onClick={handleMarkSubmitted}
               disabled={marking}
-              style={{ background: 'rgba(27,79,216,0.15)', border: '1px solid rgba(27,79,216,0.3)', borderRadius: '6px', padding: '7px 12px', fontSize: '12px', color: '#7BA3FF', cursor: 'pointer', fontFamily: 'var(--font-inter)' }}
+              style={{ background: '#EBF2FF', border: '1px solid #BFDBFE', borderRadius: '6px', padding: '7px 12px', fontSize: '12px', color: '#1D4ED8', cursor: 'pointer', fontFamily: 'var(--font-inter)' }}
             >
               {marking ? 'Saving...' : 'Mark appeal as submitted'}
             </button>

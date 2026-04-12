@@ -25,9 +25,9 @@ const inputSt: React.CSSProperties = {
   width: '100%',
   fontFamily: 'var(--font-inter)',
   fontSize: '13px',
-  color: '#ffffff',
-  background: 'rgba(255,255,255,0.03)',
-  border: '1px solid rgba(255,255,255,0.08)',
+  color: '#0F172A',
+  background: '#F8FAFC',
+  border: '1px solid #E2E8F0',
   borderRadius: '8px',
   padding: '10px 14px',
   outline: 'none',
@@ -38,7 +38,7 @@ const labelSt: React.CSSProperties = {
   fontFamily: 'var(--font-inter)',
   fontSize: '11px',
   fontWeight: 600,
-  color: '#4A5A7A',
+  color: '#64748B',
   textTransform: 'uppercase',
   letterSpacing: '0.08em',
   display: 'block',
@@ -150,7 +150,7 @@ export default function SettingsPage() {
   const planBadgeColor = userData?.plan === 'pro' ? '#7BA3FF' : userData?.plan === 'clinic' ? '#66BB6A' : '#4A5A7A'
 
   const focusInput = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => (e.currentTarget.style.borderColor = '#1B4FD8')
-  const blurInput = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')
+  const blurInput = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => (e.currentTarget.style.borderColor = '#E2E8F0')
 
   return (
     <div>
@@ -160,7 +160,7 @@ export default function SettingsPage() {
         {/* ─── Practice information ─── */}
         {practiceLoaded && (
           <section style={{ marginBottom: '40px' }}>
-            <div style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', fontWeight: 600, color: '#ffffff', marginBottom: '20px', paddingBottom: '12px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <div style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', fontWeight: 600, color: '#0F172A', marginBottom: '20px', paddingBottom: '12px', borderBottom: '1px solid #E2E8F0' }}>
               Practice information
             </div>
 
@@ -251,7 +251,7 @@ export default function SettingsPage() {
                 {practiceSaved ? '✓ Saved' : savingPractice ? 'Saving...' : 'Save changes'}
               </button>
               {practice.updated_at && (
-                <span style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', color: '#4A5A7A' }}>
+                <span style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', color: '#94A3B8' }}>
                   Last updated {new Date(practice.updated_at).toLocaleDateString()}
                 </span>
               )}
@@ -266,12 +266,12 @@ export default function SettingsPage() {
 
         {/* Profile */}
         <section style={{ marginBottom: '40px' }}>
-          <div style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', fontWeight: 600, color: '#ffffff', marginBottom: '20px', paddingBottom: '12px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', fontWeight: 600, color: '#0F172A', marginBottom: '20px', paddingBottom: '12px', borderBottom: '1px solid #E2E8F0' }}>
             Profile
           </div>
           <div style={{ marginBottom: '16px' }}>
             <label style={labelSt}>Email</label>
-            <div style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', color: '#6B7A9A', padding: '10px 14px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' }}>
+            <div style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', color: '#64748B', padding: '10px 14px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px' }}>
               {userData?.email ?? '—'}
             </div>
           </div>
@@ -295,22 +295,22 @@ export default function SettingsPage() {
 
         {/* Plan & billing */}
         <section style={{ marginBottom: '40px' }}>
-          <div style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', fontWeight: 600, color: '#ffffff', marginBottom: '20px', paddingBottom: '12px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', fontWeight: 600, color: '#0F172A', marginBottom: '20px', paddingBottom: '12px', borderBottom: '1px solid #E2E8F0' }}>
             Plan & billing
           </div>
-          <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '20px', marginBottom: '16px' }}>
+          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', padding: '20px', marginBottom: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <span style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', color: '#ffffff', fontWeight: 500 }}>Current plan</span>
+              <span style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', color: '#0F172A', fontWeight: 500 }}>Current plan</span>
               <span style={{ fontFamily: 'var(--font-inter)', fontSize: '12px', fontWeight: 700, color: planBadgeColor, textTransform: 'capitalize', background: `${planBadgeColor}18`, border: `1px solid ${planBadgeColor}40`, borderRadius: '99px', padding: '3px 10px' }}>
                 {userData?.plan ?? 'free'}
               </span>
             </div>
             {userData?.plan === 'free' && (
               <>
-                <div style={{ fontFamily: 'var(--font-inter)', fontSize: '12px', color: '#4A5A7A', marginBottom: '4px' }}>
+                <div style={{ fontFamily: 'var(--font-inter)', fontSize: '12px', color: '#64748B', marginBottom: '4px' }}>
                   {userData.pa_count_this_month} of {userData.pa_quota ?? 10} free prior auths used this month
                 </div>
-                <div style={{ height: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '99px', overflow: 'hidden', marginBottom: '16px' }}>
+                <div style={{ height: '4px', background: '#E2E8F0', borderRadius: '99px', overflow: 'hidden', marginBottom: '16px' }}>
                   <div style={{ height: '100%', background: '#1B4FD8', borderRadius: '99px', width: `${Math.min(((userData.pa_count_this_month) / (userData.pa_quota ?? 10)) * 100, 100)}%`, transition: 'width 0.4s' }} />
                 </div>
                 <a href="/waitlist" style={{ display: 'inline-block', background: '#1B4FD8', color: '#ffffff', textDecoration: 'none', padding: '10px 20px', borderRadius: '8px', fontFamily: 'var(--font-inter)', fontSize: '13px', fontWeight: 600 }}>
@@ -336,7 +336,7 @@ export default function SettingsPage() {
             <button
               onClick={handleSignOut}
               disabled={signingOut}
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '10px 20px', fontSize: '13px', color: '#6B7A9A', cursor: 'pointer', fontFamily: 'var(--font-inter)' }}
+              style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '10px 20px', fontSize: '13px', color: '#475569', cursor: 'pointer', fontFamily: 'var(--font-inter)' }}
             >
               {signingOut ? 'Signing out...' : 'Sign out'}
             </button>

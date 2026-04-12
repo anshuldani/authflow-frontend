@@ -193,8 +193,8 @@ export default function PayersPage() {
               key={p.id}
               onClick={() => setSelectedPayer(p.id)}
               style={{
-                background: selectedPayer === p.id ? 'rgba(27,79,216,0.15)' : 'rgba(255,255,255,0.02)',
-                border: `1px solid ${selectedPayer === p.id ? 'rgba(27,79,216,0.4)' : 'rgba(255,255,255,0.06)'}`,
+                background: selectedPayer === p.id ? '#EBF2FF' : '#F8FAFC',
+                border: `1px solid ${selectedPayer === p.id ? '#BFDBFE' : '#E2E8F0'}`,
                 borderLeft: `3px solid ${selectedPayer === p.id ? p.color : 'transparent'}`,
                 borderRadius: '8px',
                 padding: '12px 14px',
@@ -202,8 +202,8 @@ export default function PayersPage() {
                 textAlign: 'left',
               }}
             >
-              <div style={{ fontFamily: ff, fontSize: '13px', fontWeight: 500, color: selectedPayer === p.id ? '#ffffff' : '#6B7A9A' }}>{p.shortName}</div>
-              <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginTop: '2px' }}>{p.pa_phone}</div>
+              <div style={{ fontFamily: ff, fontSize: '13px', fontWeight: 500, color: selectedPayer === p.id ? '#1D4ED8' : '#475569' }}>{p.shortName}</div>
+              <div style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8', marginTop: '2px' }}>{p.pa_phone}</div>
             </button>
           ))}
         </div>
@@ -211,12 +211,12 @@ export default function PayersPage() {
         {/* Main payer content */}
         <div>
           {/* Header */}
-          <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '20px 24px', marginBottom: '16px' }}>
+          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '20px 24px', marginBottom: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                   <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: payer.color, flexShrink: 0 }} />
-                  <h1 style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 700, fontSize: '22px', color: '#ffffff', letterSpacing: '-0.5px' }}>{payer.name}</h1>
+                  <h1 style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 700, fontSize: '22px', color: '#0F172A', letterSpacing: '-0.5px' }}>{payer.name}</h1>
                 </div>
                 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                   <InfoChip label="Routine" value={payer.turnaround_routine} />
@@ -235,7 +235,7 @@ export default function PayersPage() {
           </div>
 
           {/* Tab bar */}
-          <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: '20px', gap: '0' }}>
+          <div style={{ display: 'flex', borderBottom: '1px solid #E2E8F0', marginBottom: '20px', gap: '0' }}>
             {([
               { key: 'contacts', label: 'Contacts & Submit' },
               { key: 'drugs', label: 'Drug Classes' },
@@ -250,7 +250,7 @@ export default function PayersPage() {
                   borderBottom: activeTab === tab.key ? '2px solid #1B4FD8' : '2px solid transparent',
                   padding: '8px 16px', fontFamily: ff, fontSize: '13px',
                   fontWeight: activeTab === tab.key ? 600 : 400,
-                  color: activeTab === tab.key ? '#ffffff' : '#6B7A9A',
+                  color: activeTab === tab.key ? '#1D4ED8' : '#64748B',
                   cursor: 'pointer', marginBottom: '-1px',
                 }}
               >
@@ -276,16 +276,16 @@ export default function PayersPage() {
                 secondary="PA submissions & documents"
                 copyValue={payer.pa_fax}
               />
-              <div style={{ gridColumn: '1 / -1', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '16px 18px' }}>
-                <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>Online Portal</div>
-                <div style={{ fontFamily: ff, fontSize: '14px', color: '#ffffff', marginBottom: '4px' }}>{payer.portal_name}</div>
-                <a href={payer.portal_url} target="_blank" rel="noopener noreferrer" style={{ fontFamily: ff, fontSize: '12px', color: '#7BA3FF', textDecoration: 'none' }}>
+              <div style={{ gridColumn: '1 / -1', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', padding: '16px 18px' }}>
+                <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>Online Portal</div>
+                <div style={{ fontFamily: ff, fontSize: '14px', color: '#0F172A', marginBottom: '4px' }}>{payer.portal_name}</div>
+                <a href={payer.portal_url} target="_blank" rel="noopener noreferrer" style={{ fontFamily: ff, fontSize: '12px', color: '#1D4ED8', textDecoration: 'none' }}>
                   {payer.portal_url} →
                 </a>
               </div>
-              <div style={{ gridColumn: '1 / -1', background: 'rgba(27,79,216,0.06)', border: '1px solid rgba(27,79,216,0.12)', borderRadius: '10px', padding: '16px 18px' }}>
-                <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#7BA3FF', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>Step Therapy Note</div>
-                <p style={{ fontFamily: ff, fontSize: '13px', color: '#8899BB', lineHeight: 1.6, margin: 0 }}>{payer.step_therapy_note}</p>
+              <div style={{ gridColumn: '1 / -1', background: '#EBF2FF', border: '1px solid #BFDBFE', borderRadius: '10px', padding: '16px 18px' }}>
+                <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#1D4ED8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>Step Therapy Note</div>
+                <p style={{ fontFamily: ff, fontSize: '13px', color: '#334155', lineHeight: 1.6, margin: 0 }}>{payer.step_therapy_note}</p>
               </div>
             </div>
           )}
@@ -294,9 +294,9 @@ export default function PayersPage() {
           {activeTab === 'drugs' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {payer.drug_classes.map(dc => (
-                <div key={dc.name} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderLeft: '3px solid #1B4FD8', borderRadius: '8px', padding: '14px 16px' }}>
-                  <div style={{ fontFamily: ff, fontSize: '13px', fontWeight: 600, color: '#ffffff', marginBottom: '6px' }}>{dc.name}</div>
-                  <p style={{ fontFamily: ff, fontSize: '12px', color: '#6B7A9A', lineHeight: 1.65, margin: 0 }}>{dc.requirements}</p>
+                <div key={dc.name} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '3px solid #1B4FD8', borderRadius: '8px', padding: '14px 16px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+                  <div style={{ fontFamily: ff, fontSize: '13px', fontWeight: 600, color: '#0F172A', marginBottom: '6px' }}>{dc.name}</div>
+                  <p style={{ fontFamily: ff, fontSize: '12px', color: '#475569', lineHeight: 1.65, margin: 0 }}>{dc.requirements}</p>
                 </div>
               ))}
             </div>
@@ -306,14 +306,14 @@ export default function PayersPage() {
           {activeTab === 'denials' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {payer.common_denials.map(d => (
-                <div key={d.code} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderLeft: '3px solid #EF5350', borderRadius: '8px', padding: '14px 16px' }}>
+                <div key={d.code} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '3px solid #EF5350', borderRadius: '8px', padding: '14px 16px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '6px' }}>
-                    <span style={{ background: 'rgba(239,83,80,0.15)', color: '#f87171', fontSize: '11px', fontFamily: ff, fontWeight: 700, padding: '2px 8px', borderRadius: '6px' }}>{d.code}</span>
-                    <span style={{ fontFamily: ff, fontSize: '13px', fontWeight: 500, color: '#ffffff' }}>{d.reason}</span>
+                    <span style={{ background: 'rgba(239,83,80,0.1)', color: '#DC2626', fontSize: '11px', fontFamily: ff, fontWeight: 700, padding: '2px 8px', borderRadius: '6px' }}>{d.code}</span>
+                    <span style={{ fontFamily: ff, fontSize: '13px', fontWeight: 500, color: '#0F172A' }}>{d.reason}</span>
                   </div>
                   <div style={{ display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
                     <span style={{ fontSize: '12px', flexShrink: 0, marginTop: '1px' }}>💡</span>
-                    <p style={{ fontFamily: ff, fontSize: '12px', color: '#6B7A9A', lineHeight: 1.65, margin: 0 }}>{d.tip}</p>
+                    <p style={{ fontFamily: ff, fontSize: '12px', color: '#475569', lineHeight: 1.65, margin: 0 }}>{d.tip}</p>
                   </div>
                 </div>
               ))}
@@ -324,9 +324,9 @@ export default function PayersPage() {
           {activeTab === 'tips' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {payer.tips.map((tip, i) => (
-                <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderLeft: '3px solid #4ade80', borderRadius: '8px', padding: '14px 16px', display: 'flex', gap: '10px' }}>
-                  <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#4ade80', background: 'rgba(74,222,128,0.1)', padding: '2px 8px', borderRadius: '6px', height: 'fit-content', flexShrink: 0 }}>#{i + 1}</span>
-                  <p style={{ fontFamily: ff, fontSize: '13px', color: '#8899BB', lineHeight: 1.65, margin: 0 }}>{tip}</p>
+                <div key={i} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderLeft: '3px solid #16A34A', borderRadius: '8px', padding: '14px 16px', display: 'flex', gap: '10px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+                  <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#16A34A', background: 'rgba(22,163,74,0.1)', padding: '2px 8px', borderRadius: '6px', height: 'fit-content', flexShrink: 0 }}>#{i + 1}</span>
+                  <p style={{ fontFamily: ff, fontSize: '13px', color: '#334155', lineHeight: 1.65, margin: 0 }}>{tip}</p>
                 </div>
               ))}
             </div>
@@ -340,8 +340,8 @@ export default function PayersPage() {
 function InfoChip({ label, value }: { label: string; value: string }) {
   return (
     <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-      <span style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A' }}>{label}:</span>
-      <span style={{ fontFamily: ff, fontSize: '12px', fontWeight: 500, color: '#9BA8C0' }}>{value}</span>
+      <span style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8' }}>{label}:</span>
+      <span style={{ fontFamily: ff, fontSize: '12px', fontWeight: 500, color: '#475569' }}>{value}</span>
     </div>
   )
 }
@@ -356,18 +356,18 @@ function ContactCard({ icon, title, primary, secondary, copyValue }: {
     setTimeout(() => setCopied(false), 1500)
   }
   return (
-    <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '16px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', padding: '16px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
       <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
         <span style={{ fontSize: '20px' }}>{icon}</span>
         <div>
-          <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>{title}</div>
-          <div style={{ fontFamily: ff, fontSize: '15px', fontWeight: 600, color: '#ffffff', marginBottom: '2px' }}>{primary}</div>
-          <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A' }}>{secondary}</div>
+          <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>{title}</div>
+          <div style={{ fontFamily: ff, fontSize: '15px', fontWeight: 600, color: '#0F172A', marginBottom: '2px' }}>{primary}</div>
+          <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B' }}>{secondary}</div>
         </div>
       </div>
       <button
         onClick={handleCopy}
-        style={{ background: copied ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.06)', border: `1px solid ${copied ? 'rgba(74,222,128,0.2)' : 'rgba(255,255,255,0.08)'}`, borderRadius: '6px', padding: '6px 12px', fontFamily: ff, fontSize: '11px', color: copied ? '#4ade80' : '#6B7A9A', cursor: 'pointer' }}
+        style={{ background: copied ? 'rgba(22,163,74,0.08)' : '#F8FAFC', border: `1px solid ${copied ? 'rgba(22,163,74,0.2)' : '#E2E8F0'}`, borderRadius: '6px', padding: '6px 12px', fontFamily: ff, fontSize: '11px', color: copied ? '#16A34A' : '#64748B', cursor: 'pointer' }}
       >
         {copied ? 'Copied ✓' : 'Copy'}
       </button>

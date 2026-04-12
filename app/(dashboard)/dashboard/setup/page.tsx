@@ -31,12 +31,12 @@ function formatPhone(value: string): string {
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
-  background: 'rgba(255,255,255,0.04)',
-  border: '1px solid rgba(255,255,255,0.08)',
+  background: '#F8FAFC',
+  border: '1px solid #E2E8F0',
   borderRadius: '8px',
   padding: '11px 14px',
   fontSize: '14px',
-  color: '#ffffff',
+  color: '#0F172A',
   fontFamily: 'var(--font-inter)',
   outline: 'none',
   transition: 'border-color 0.2s',
@@ -46,7 +46,7 @@ const labelStyle: React.CSSProperties = {
   fontFamily: 'var(--font-inter)',
   fontSize: '12px',
   fontWeight: 600,
-  color: '#6B7A9A',
+  color: '#64748B',
   display: 'block',
   marginBottom: '6px',
 }
@@ -155,18 +155,18 @@ export default function SetupPage() {
     e.currentTarget.style.borderColor = '#1B4FD8'
   }
   const inputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+    e.currentTarget.style.borderColor = '#E2E8F0'
   }
 
   if (success) {
     return (
-      <div style={{ minHeight: '100vh', background: '#0B0F1A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', background: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>✓</div>
-          <div style={{ fontFamily: 'var(--font-inter)', fontSize: '18px', fontWeight: 600, color: '#ffffff', marginBottom: '8px' }}>
+          <div style={{ fontFamily: 'var(--font-inter)', fontSize: '18px', fontWeight: 600, color: '#0F172A', marginBottom: '8px' }}>
             Practice set up.
           </div>
-          <div style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', color: '#6B7A9A' }}>
+          <div style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', color: '#64748B' }}>
             Let&apos;s generate your first PA.
           </div>
         </div>
@@ -175,27 +175,27 @@ export default function SetupPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0B0F1A', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 24px' }}>
+    <div style={{ minHeight: '100vh', background: '#F8FAFC', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 24px' }}>
       <div style={{ width: '100%', maxWidth: '680px' }}>
         {/* Wordmark */}
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 700, color: '#1A56DB', marginBottom: '8px' }}>
           Authflow.
         </div>
         {/* Progress */}
-        <div style={{ fontFamily: 'var(--font-inter)', fontSize: '12px', color: '#6B7A9A', marginBottom: '32px' }}>
+        <div style={{ fontFamily: 'var(--font-inter)', fontSize: '12px', color: '#64748B', marginBottom: '32px' }}>
           Step {step} of 3
         </div>
 
         {/* ───── STEP 1 ───── */}
         {step === 1 && (
           <>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '36px', fontWeight: 800, color: '#ffffff', letterSpacing: '-1px', marginBottom: '8px' }}>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '36px', fontWeight: 800, color: '#0F172A', letterSpacing: '-1px', marginBottom: '8px' }}>
               Let&apos;s set up your practice.
             </h1>
-            <p style={{ fontFamily: 'var(--font-inter)', fontSize: '15px', color: '#6B7A9A', marginBottom: '36px' }}>
+            <p style={{ fontFamily: 'var(--font-inter)', fontSize: '15px', color: '#475569', marginBottom: '36px' }}>
               We&apos;ll use this to automatically fill in your provider information on every prior authorization. You&apos;ll never need to enter it again.
             </p>
-            <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '32px' }}>
+            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '32px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
               {/* Practice name */}
               <div style={{ marginBottom: '20px' }}>
                 <label style={labelStyle}>Practice name *</label>
@@ -203,7 +203,7 @@ export default function SetupPage() {
                   value={practiceName}
                   onChange={e => setPracticeName(e.target.value)}
                   placeholder="Chicago Orthopedic Associates"
-                  style={{ ...inputStyle, borderColor: step1Errors.practiceName ? '#EF5350' : 'rgba(255,255,255,0.08)' }}
+                  style={{ ...inputStyle, borderColor: step1Errors.practiceName ? '#EF5350' : '#E2E8F0' }}
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                 />
@@ -216,7 +216,7 @@ export default function SetupPage() {
                   <select
                     value={specialty}
                     onChange={e => setSpecialty(e.target.value)}
-                    style={{ ...inputStyle, borderColor: step1Errors.specialty ? '#EF5350' : 'rgba(255,255,255,0.08)' }}
+                    style={{ ...inputStyle, borderColor: step1Errors.specialty ? '#EF5350' : '#E2E8F0' }}
                     onFocus={inputFocus}
                     onBlur={inputBlur}
                   >
@@ -249,7 +249,7 @@ export default function SetupPage() {
                   value={address}
                   onChange={e => setAddress(e.target.value)}
                   placeholder="123 N Michigan Ave"
-                  style={{ ...inputStyle, borderColor: step1Errors.address ? '#EF5350' : 'rgba(255,255,255,0.08)' }}
+                  style={{ ...inputStyle, borderColor: step1Errors.address ? '#EF5350' : '#E2E8F0' }}
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                 />
@@ -263,7 +263,7 @@ export default function SetupPage() {
                     value={city}
                     onChange={e => setCity(e.target.value)}
                     placeholder="Chicago"
-                    style={{ ...inputStyle, borderColor: step1Errors.city ? '#EF5350' : 'rgba(255,255,255,0.08)' }}
+                    style={{ ...inputStyle, borderColor: step1Errors.city ? '#EF5350' : '#E2E8F0' }}
                     onFocus={inputFocus}
                     onBlur={inputBlur}
                   />
@@ -288,7 +288,7 @@ export default function SetupPage() {
                     onChange={e => setZip(e.target.value.replace(/\D/g, '').slice(0, 10))}
                     placeholder="60601"
                     maxLength={10}
-                    style={{ ...inputStyle, borderColor: step1Errors.zip ? '#EF5350' : 'rgba(255,255,255,0.08)' }}
+                    style={{ ...inputStyle, borderColor: step1Errors.zip ? '#EF5350' : '#E2E8F0' }}
                     onFocus={inputFocus}
                     onBlur={inputBlur}
                   />
@@ -303,7 +303,7 @@ export default function SetupPage() {
                     value={phone}
                     onChange={e => setPhone(formatPhone(e.target.value))}
                     placeholder="(312) 555-0100"
-                    style={{ ...inputStyle, borderColor: step1Errors.phone ? '#EF5350' : 'rgba(255,255,255,0.08)' }}
+                    style={{ ...inputStyle, borderColor: step1Errors.phone ? '#EF5350' : '#E2E8F0' }}
                     onFocus={inputFocus}
                     onBlur={inputBlur}
                   />
@@ -334,13 +334,13 @@ export default function SetupPage() {
         {/* ───── STEP 2 ───── */}
         {step === 2 && (
           <>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '36px', fontWeight: 800, color: '#ffffff', letterSpacing: '-1px', marginBottom: '8px' }}>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '36px', fontWeight: 800, color: '#0F172A', letterSpacing: '-1px', marginBottom: '8px' }}>
               About the ordering physician.
             </h1>
-            <p style={{ fontFamily: 'var(--font-inter)', fontSize: '15px', color: '#6B7A9A', marginBottom: '36px' }}>
+            <p style={{ fontFamily: 'var(--font-inter)', fontSize: '15px', color: '#475569', marginBottom: '36px' }}>
               This is the doctor whose name will appear on every prior authorization request.
             </p>
-            <div style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '32px' }}>
+            <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '32px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
               {/* Name + Credentials */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                 <div>
@@ -349,7 +349,7 @@ export default function SetupPage() {
                     value={physicianName}
                     onChange={e => setPhysicianName(e.target.value)}
                     placeholder="Dr. Sarah Chen"
-                    style={{ ...inputStyle, borderColor: step2Errors.physicianName ? '#EF5350' : 'rgba(255,255,255,0.08)' }}
+                    style={{ ...inputStyle, borderColor: step2Errors.physicianName ? '#EF5350' : '#E2E8F0' }}
                     onFocus={inputFocus}
                     onBlur={inputBlur}
                   />
@@ -360,7 +360,7 @@ export default function SetupPage() {
                   <select
                     value={credentials}
                     onChange={e => setCredentials(e.target.value)}
-                    style={{ ...inputStyle, borderColor: step2Errors.credentials ? '#EF5350' : 'rgba(255,255,255,0.08)' }}
+                    style={{ ...inputStyle, borderColor: step2Errors.credentials ? '#EF5350' : '#E2E8F0' }}
                     onFocus={inputFocus}
                     onBlur={inputBlur}
                   >
@@ -378,7 +378,7 @@ export default function SetupPage() {
                   onChange={e => setNpi(e.target.value.replace(/\D/g, '').slice(0, 10))}
                   placeholder="1234567890"
                   maxLength={10}
-                  style={{ ...inputStyle, borderColor: step2Errors.npi ? '#EF5350' : 'rgba(255,255,255,0.08)' }}
+                  style={{ ...inputStyle, borderColor: step2Errors.npi ? '#EF5350' : '#E2E8F0' }}
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                 />
@@ -409,7 +409,7 @@ export default function SetupPage() {
             <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
               <button
                 onClick={() => setStep(1)}
-                style={{ flex: '0 0 auto', background: 'transparent', color: '#6B7A9A', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '14px 20px', fontSize: '14px', fontWeight: 600, fontFamily: 'var(--font-inter)', cursor: 'pointer' }}
+                style={{ flex: '0 0 auto', background: 'transparent', color: '#64748B', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '14px 20px', fontSize: '14px', fontWeight: 600, fontFamily: 'var(--font-inter)', cursor: 'pointer' }}
               >
                 ← Back
               </button>
@@ -426,10 +426,10 @@ export default function SetupPage() {
         {/* ───── STEP 3 ───── */}
         {step === 3 && (
           <>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '36px', fontWeight: 800, color: '#ffffff', letterSpacing: '-1px', marginBottom: '8px' }}>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '36px', fontWeight: 800, color: '#0F172A', letterSpacing: '-1px', marginBottom: '8px' }}>
               Select your payers.
             </h1>
-            <p style={{ fontFamily: 'var(--font-inter)', fontSize: '15px', color: '#6B7A9A', marginBottom: '36px' }}>
+            <p style={{ fontFamily: 'var(--font-inter)', fontSize: '15px', color: '#475569', marginBottom: '36px' }}>
               We&apos;ll prioritize these payers in your workflow. You can always change this in settings.
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '32px' }}>
@@ -441,8 +441,8 @@ export default function SetupPage() {
                     onClick={() => !payer.disabled && togglePayer(payer.id)}
                     disabled={payer.disabled}
                     style={{
-                      background: payer.disabled ? 'rgba(255,255,255,0.01)' : isSelected ? 'rgba(27,79,216,0.10)' : 'rgba(255,255,255,0.03)',
-                      border: `1px solid ${payer.disabled ? 'rgba(255,255,255,0.04)' : isSelected ? '#1B4FD8' : 'rgba(255,255,255,0.08)'}`,
+                      background: payer.disabled ? '#F8FAFC' : isSelected ? '#EBF2FF' : '#FFFFFF',
+                      border: `1px solid ${payer.disabled ? '#F1F5F9' : isSelected ? '#1B4FD8' : '#E2E8F0'}`,
                       borderRadius: '12px',
                       padding: '16px 20px',
                       cursor: payer.disabled ? 'default' : 'pointer',
@@ -455,10 +455,10 @@ export default function SetupPage() {
                     {isSelected && !payer.disabled && (
                       <div style={{ position: 'absolute', top: '10px', right: '12px', color: '#1B4FD8', fontSize: '14px' }}>✓</div>
                     )}
-                    <div style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, color: '#ffffff', marginBottom: '4px' }}>
+                    <div style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, color: '#0F172A', marginBottom: '4px' }}>
                       {payer.name}
                     </div>
-                    <div style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', color: '#6B7A9A' }}>
+                    <div style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', color: '#64748B' }}>
                       {payer.note}
                     </div>
                   </button>
@@ -468,7 +468,7 @@ export default function SetupPage() {
             <div style={{ display: 'flex', gap: '12px' }}>
               <button
                 onClick={() => setStep(2)}
-                style={{ flex: '0 0 auto', background: 'transparent', color: '#6B7A9A', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '14px 20px', fontSize: '14px', fontWeight: 600, fontFamily: 'var(--font-inter)', cursor: 'pointer' }}
+                style={{ flex: '0 0 auto', background: 'transparent', color: '#64748B', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '14px 20px', fontSize: '14px', fontWeight: 600, fontFamily: 'var(--font-inter)', cursor: 'pointer' }}
               >
                 ← Back
               </button>

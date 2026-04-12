@@ -107,9 +107,9 @@ export default function RenewalsPage() {
             { label: 'Expiring in 30–60 days', value: expiringCount },
             { label: 'Expired (action needed)', value: expiredCount, urgent: expiredCount > 0 },
           ].map(s => (
-            <div key={s.label} style={{ background: '#111827', border: `1px solid ${s.urgent ? 'rgba(239,68,68,0.25)' : 'rgba(255,255,255,0.07)'}`, borderRadius: '12px', padding: '16px 18px' }}>
-              <div style={{ fontFamily: ff, fontSize: '10px', color: '#6B7A9A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>{s.label}</div>
-              <div style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 800, fontSize: '28px', color: s.urgent ? '#f87171' : '#ffffff', letterSpacing: '-1px', lineHeight: 1 }}>{s.value}</div>
+            <div key={s.label} style={{ background: '#FFFFFF', border: `1px solid ${s.urgent ? 'rgba(239,68,68,0.25)' : '#E2E8F0'}`, borderRadius: '12px', padding: '16px 18px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+              <div style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>{s.label}</div>
+              <div style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 800, fontSize: '28px', color: s.urgent ? '#f87171' : '#0F172A', letterSpacing: '-1px', lineHeight: 1 }}>{s.value}</div>
             </div>
           ))}
         </div>
@@ -126,11 +126,11 @@ export default function RenewalsPage() {
               key={tab.key}
               onClick={() => setFilter(tab.key)}
               style={{
-                background: filter === tab.key ? 'rgba(27,79,216,0.15)' : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${filter === tab.key ? 'rgba(27,79,216,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                background: filter === tab.key ? '#EBF2FF' : '#F8FAFC',
+                border: `1px solid ${filter === tab.key ? '#BFDBFE' : '#E2E8F0'}`,
                 borderRadius: '8px', padding: '6px 14px',
                 fontFamily: ff, fontSize: '12px', fontWeight: filter === tab.key ? 600 : 400,
-                color: filter === tab.key ? '#ffffff' : '#6B7A9A',
+                color: filter === tab.key ? '#1D4ED8' : '#64748B',
                 cursor: 'pointer',
               }}
             >
@@ -140,9 +140,9 @@ export default function RenewalsPage() {
         </div>
 
         {loading ? (
-          <div style={{ fontFamily: ff, fontSize: '13px', color: '#4A5A7A', padding: '40px', textAlign: 'center' }}>Loading authorizations...</div>
+          <div style={{ fontFamily: ff, fontSize: '13px', color: '#94A3B8', padding: '40px', textAlign: 'center' }}>Loading authorizations...</div>
         ) : filtered.length === 0 ? (
-          <div style={{ fontFamily: ff, fontSize: '13px', color: '#4A5A7A', padding: '48px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ fontFamily: ff, fontSize: '13px', color: '#64748B', padding: '48px', textAlign: 'center', background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
             {allPAs.length === 0
               ? 'No approved prior authorizations yet. Auth dates will appear here once you log them on approved PAs.'
               : 'No authorizations match this filter.'}
@@ -162,9 +162,9 @@ export default function RenewalsPage() {
         )}
 
         {allPAs.length === 0 && !loading && (
-          <div style={{ background: 'rgba(27,79,216,0.05)', border: '1px solid rgba(27,79,216,0.12)', borderRadius: '12px', padding: '20px 24px', marginTop: '24px' }}>
-            <div style={{ fontFamily: ff, fontSize: '12px', fontWeight: 700, color: '#7BA3FF', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>How to track expiration dates</div>
-            <p style={{ fontFamily: ff, fontSize: '13px', color: '#6B7A9A', lineHeight: 1.6, margin: 0 }}>
+          <div style={{ background: '#EBF2FF', border: '1px solid #BFDBFE', borderRadius: '12px', padding: '20px 24px', marginTop: '24px' }}>
+            <div style={{ fontFamily: ff, fontSize: '12px', fontWeight: 700, color: '#1D4ED8', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>How to track expiration dates</div>
+            <p style={{ fontFamily: ff, fontSize: '13px', color: '#475569', lineHeight: 1.6, margin: 0 }}>
               When you mark a PA as approved and log the auth number, also add the &quot;valid from&quot; and &quot;valid through&quot; dates.
               Authflow will alert you here when auths are about to expire so you can renew before service is disrupted.
             </p>
@@ -198,7 +198,7 @@ function RenewalRow({ pa, onRenew, onSaveDates, saving }: {
     : `${pa.daysLeft}d remaining`
 
   return (
-    <div style={{ background: '#0E1420', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', overflow: 'hidden' }}>
+    <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
       <div
         style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
         onClick={() => setExpanded(v => !v)}
@@ -210,17 +210,17 @@ function RenewalRow({ pa, onRenew, onSaveDates, saving }: {
 
         {/* Patient + procedure */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: ff, fontSize: '13px', fontWeight: 500, color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <div style={{ fontFamily: ff, fontSize: '13px', fontWeight: 500, color: '#0F172A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {pa.patient_name ?? 'Unknown patient'}
           </div>
-          <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {pa.procedure_name} · {pa.payer}
           </div>
         </div>
 
         {/* Auth number */}
         {pa.auth_number && (
-          <div style={{ fontFamily: ff, fontSize: '11px', color: '#6B7A9A', flexShrink: 0 }}>
+          <div style={{ fontFamily: ff, fontSize: '11px', color: '#94A3B8', flexShrink: 0 }}>
             Auth #{pa.auth_number}
           </div>
         )}
@@ -235,7 +235,7 @@ function RenewalRow({ pa, onRenew, onSaveDates, saving }: {
         {/* Renew button */}
         <button
           onClick={e => { e.stopPropagation(); onRenew() }}
-          style={{ background: 'rgba(27,79,216,0.15)', border: '1px solid rgba(27,79,216,0.3)', borderRadius: '6px', padding: '6px 12px', fontFamily: ff, fontSize: '11px', fontWeight: 600, color: '#7BA3FF', cursor: 'pointer', flexShrink: 0 }}
+          style={{ background: '#EBF2FF', border: '1px solid #BFDBFE', borderRadius: '6px', padding: '6px 12px', fontFamily: ff, fontSize: '11px', fontWeight: 600, color: '#1D4ED8', cursor: 'pointer', flexShrink: 0 }}
         >
           Renew →
         </button>
@@ -245,25 +245,25 @@ function RenewalRow({ pa, onRenew, onSaveDates, saving }: {
 
       {/* Expanded: edit auth dates */}
       {expanded && (
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '14px 18px', background: 'rgba(255,255,255,0.01)' }}>
-          <div style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Authorization dates</div>
+        <div style={{ borderTop: '1px solid #E2E8F0', padding: '14px 18px', background: '#F8FAFC' }}>
+          <div style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Authorization dates</div>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
             <div>
-              <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginBottom: '4px' }}>Valid from</div>
+              <div style={{ fontFamily: ff, fontSize: '10px', color: '#64748B', marginBottom: '4px' }}>Valid from</div>
               <input
                 type="date"
                 value={editFrom}
                 onChange={e => { setEditFrom(e.target.value); setDirty(true) }}
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none', colorScheme: 'dark' }}
+                style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#0F172A', fontFamily: ff, outline: 'none', colorScheme: 'light' }}
               />
             </div>
             <div>
-              <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginBottom: '4px' }}>Valid through</div>
+              <div style={{ fontFamily: ff, fontSize: '10px', color: '#64748B', marginBottom: '4px' }}>Valid through</div>
               <input
                 type="date"
                 value={editThrough}
                 onChange={e => { setEditThrough(e.target.value); setDirty(true) }}
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none', colorScheme: 'dark' }}
+                style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '7px 10px', fontSize: '12px', color: '#0F172A', fontFamily: ff, outline: 'none', colorScheme: 'light' }}
               />
             </div>
             {dirty && (
@@ -284,8 +284,8 @@ function RenewalRow({ pa, onRenew, onSaveDates, saving }: {
                 ['Member ID', pa.patient_member_id],
               ].filter(([, v]) => v).map(([label, value]) => (
                 <div key={label as string}>
-                  <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginBottom: '2px' }}>{label}</div>
-                  <div style={{ fontFamily: ff, fontSize: '12px', color: '#8899BB' }}>{value}</div>
+                  <div style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8', marginBottom: '2px' }}>{label}</div>
+                  <div style={{ fontFamily: ff, fontSize: '12px', color: '#475569' }}>{value}</div>
                 </div>
               ))}
             </div>

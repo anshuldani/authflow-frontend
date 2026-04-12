@@ -46,11 +46,11 @@ export default async function PADetailPage({ params }: Props) {
         </div>
 
         {/* Header */}
-        <div style={{ background: '#0E1420', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '20px 24px', marginBottom: '20px' }}>
+        <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '20px 24px', marginBottom: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                <h1 style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 700, fontSize: '20px', color: '#ffffff', letterSpacing: '-0.5px' }}>
+                <h1 style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 700, fontSize: '20px', color: '#0F172A', letterSpacing: '-0.5px' }}>
                   {pa.patient_name ?? 'Unknown patient'}
                 </h1>
                 <Badge variant={pa.status}>{pa.status}</Badge>
@@ -71,8 +71,8 @@ export default async function PADetailPage({ params }: Props) {
                   pa.auth_valid_through ? ['Expires', new Date(pa.auth_valid_through).toLocaleDateString()] : null,
                 ] as ([string, string | undefined] | null)[]).filter((x): x is [string, string] => !!x && !!x[1]).map(([label, value]) => (
                   <div key={label}>
-                    <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</div>
-                    <div style={{ fontFamily: ff, fontSize: '12px', color: '#9BA8C0' }}>{value}</div>
+                    <div style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</div>
+                    <div style={{ fontFamily: ff, fontSize: '12px', color: '#475569' }}>{value}</div>
                   </div>
                 ))}
               </div>
@@ -88,12 +88,12 @@ export default async function PADetailPage({ params }: Props) {
           {/* Left: generated form */}
           <div>
             {form ? (
-              <div style={{ background: '#0E1420', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '20px 24px' }}>
+              <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '20px 24px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
                 <GeneratedForm pa={pa} form={form} />
               </div>
             ) : (
-              <div style={{ background: '#0E1420', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '40px', textAlign: 'center' }}>
-                <div style={{ fontFamily: ff, fontSize: '14px', color: '#4A5A7A', marginBottom: '12px' }}>
+              <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '40px', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+                <div style={{ fontFamily: ff, fontSize: '14px', color: '#64748B', marginBottom: '12px' }}>
                   This PA was saved as a draft without a generated form.
                 </div>
                 <Link href={`/dashboard/new?patient_name=${encodeURIComponent(pa.patient_name ?? '')}&member_id=${encodeURIComponent(pa.patient_member_id ?? '')}&payer_id=${pa.payer_id}&patient_dob=${encodeURIComponent(pa.patient_dob ?? '')}`}
@@ -108,8 +108,8 @@ export default async function PADetailPage({ params }: Props) {
           {completePAForm && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {/* Practice info */}
-              <div style={{ background: '#0E1420', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '16px' }}>
-                <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Ordering Provider</div>
+              <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+                <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Ordering Provider</div>
                 {[
                   [completePAForm.physician_name, completePAForm.physician_credentials ? `, ${completePAForm.physician_credentials}` : ''].join(''),
                   `NPI: ${completePAForm.physician_npi}`,
@@ -118,13 +118,13 @@ export default async function PADetailPage({ params }: Props) {
                   `Ph: ${completePAForm.practice_phone}`,
                   completePAForm.practice_fax ? `Fax: ${completePAForm.practice_fax}` : '',
                 ].filter(Boolean).map((line, i) => (
-                  <div key={i} style={{ fontFamily: ff, fontSize: '12px', color: '#6B7A9A', marginBottom: '2px' }}>{line}</div>
+                  <div key={i} style={{ fontFamily: ff, fontSize: '12px', color: '#475569', marginBottom: '2px' }}>{line}</div>
                 ))}
               </div>
 
               {/* Patient info */}
-              <div style={{ background: '#0E1420', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '16px' }}>
-                <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Patient</div>
+              <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+                <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Patient</div>
                 {([
                   ['Name', completePAForm.patient_name],
                   ['DOB', completePAForm.patient_dob],
@@ -133,16 +133,16 @@ export default async function PADetailPage({ params }: Props) {
                   completePAForm.patient_plan_name ? ['Plan', completePAForm.patient_plan_name] : null,
                 ] as ([string, string | undefined] | null)[]).filter((x): x is [string, string] => !!x && !!x[1]).map(([label, value]) => (
                   <div key={label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                    <span style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A' }}>{label}</span>
-                    <span style={{ fontFamily: ff, fontSize: '11px', color: '#9BA8C0' }}>{value}</span>
+                    <span style={{ fontFamily: ff, fontSize: '11px', color: '#94A3B8' }}>{label}</span>
+                    <span style={{ fontFamily: ff, fontSize: '11px', color: '#475569' }}>{value}</span>
                   </div>
                 ))}
               </div>
 
               {/* Drug PA info */}
               {pa.drug_pa_info && (
-                <div style={{ background: '#0E1420', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '16px' }}>
-                  <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Drug Info</div>
+                <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+                  <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Drug Info</div>
                   {[
                     ['Brand', pa.drug_pa_info.brand_name],
                     ['Generic', pa.drug_pa_info.generic_name],
@@ -157,11 +157,11 @@ export default async function PADetailPage({ params }: Props) {
                     </div>
                   ))}
                   {pa.drug_pa_info.step_therapy.length > 0 && (
-                    <div style={{ marginTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '10px' }}>
+                    <div style={{ marginTop: '10px', borderTop: '1px solid #E2E8F0', paddingTop: '10px' }}>
                       <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>Step therapy</div>
                       {pa.drug_pa_info.step_therapy.map((s, i) => (
-                        <div key={i} style={{ fontFamily: ff, fontSize: '11px', color: '#6B7A9A', marginBottom: '3px' }}>
-                          {i + 1}. {s.drug_name} {s.dose} — <span style={{ color: '#4A5A7A' }}>{s.outcome.replace(/_/g, ' ')}</span>
+                        <div key={i} style={{ fontFamily: ff, fontSize: '11px', color: '#475569', marginBottom: '3px' }}>
+                          {i + 1}. {s.drug_name} {s.dose} — <span style={{ color: '#94A3B8' }}>{s.outcome.replace(/_/g, ' ')}</span>
                         </div>
                       ))}
                     </div>
@@ -171,8 +171,8 @@ export default async function PADetailPage({ params }: Props) {
 
               {/* Submission status */}
               {(pa.submission_method || pa.payer_case_number || pa.follow_up_notes) && (
-                <div style={{ background: '#0E1420', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '16px' }}>
-                  <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Submission</div>
+                <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+                  <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Submission</div>
                   {([
                     pa.submission_method ? ['Method', pa.submission_method] : null,
                     pa.submission_confirmation ? ['Confirmation #', pa.submission_confirmation] : null,
@@ -185,7 +185,7 @@ export default async function PADetailPage({ params }: Props) {
                     </div>
                   ))}
                   {pa.follow_up_notes && (
-                    <div style={{ marginTop: '8px', fontFamily: ff, fontSize: '11px', color: '#6B7A9A', background: 'rgba(255,255,255,0.02)', borderRadius: '6px', padding: '8px' }}>
+                    <div style={{ marginTop: '8px', fontFamily: ff, fontSize: '11px', color: '#475569', background: '#F8FAFC', borderRadius: '6px', padding: '8px' }}>
                       {pa.follow_up_notes}
                     </div>
                   )}

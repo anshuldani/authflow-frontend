@@ -20,8 +20,8 @@ export default function StatsCards({ paCount, approvedCount, totalSubmitted, app
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '32px' }}>
       {cards.map(card => (
-        <div key={card.label} style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '20px' }}>
-          <div style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', color: '#6B7A9A', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+        <div key={card.label} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', color: '#64748B', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             {card.label}
           </div>
           <div style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 800, fontSize: '36px', color: card.color, letterSpacing: '-1px', lineHeight: 1 }}>

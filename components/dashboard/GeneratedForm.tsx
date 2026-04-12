@@ -189,7 +189,7 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
       </div>
 
       {/* Tabs: Form / Submit & Track / Follow-up */}
-      <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', borderBottom: '1px solid #E2E8F0', marginBottom: '16px' }}>
         {([
           { key: 'form', label: 'PA Form' },
           { key: 'submit', label: 'Submit & Track' },
@@ -203,7 +203,7 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
               borderBottom: activeTab === tab.key ? '2px solid #1B4FD8' : '2px solid transparent',
               padding: '7px 14px', fontFamily: ff, fontSize: '12px',
               fontWeight: activeTab === tab.key ? 600 : 400,
-              color: activeTab === tab.key ? '#ffffff' : '#6B7A9A',
+              color: activeTab === tab.key ? '#1D4ED8' : '#64748B',
               cursor: 'pointer', marginBottom: '-1px',
             }}
           >
@@ -223,24 +223,24 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
             { label: 'Supporting Evidence', value: form.supporting_evidence },
             { label: 'Policy References', value: form.policy_sections_cited.join(' · ') },
           ].map(section => (
-            <div key={section.label} style={{ marginBottom: '10px', padding: '12px 14px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', borderLeft: '2px solid #1B4FD8' }}>
+            <div key={section.label} style={{ marginBottom: '10px', padding: '12px 14px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px', borderLeft: '2px solid #1B4FD8' }}>
               <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#1B4FD8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '5px' }}>{section.label}</div>
-              <div style={{ fontFamily: ff, fontSize: '12px', color: '#8899BB', lineHeight: 1.6, whiteSpace: 'pre-line' }}>{section.value}</div>
+              <div style={{ fontFamily: ff, fontSize: '12px', color: '#334155', lineHeight: 1.6, whiteSpace: 'pre-line' }}>{section.value}</div>
             </div>
           ))}
 
           {/* Criteria breakdown */}
           {form.criteria_details && form.criteria_details.length > 0 && (
-            <div style={{ marginBottom: '10px', padding: '12px 14px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' }}>
-              <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Criteria Checklist</div>
+            <div style={{ marginBottom: '10px', padding: '12px 14px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px' }}>
+              <div style={{ fontFamily: ff, fontSize: '10px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Criteria Checklist</div>
               {form.criteria_details.map((c, i) => (
                 <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', marginBottom: '8px' }}>
                   <span style={{ width: '16px', height: '16px', borderRadius: '50%', background: c.met ? 'rgba(74,222,128,0.15)' : 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', color: c.met ? '#4ade80' : '#f87171', flexShrink: 0, marginTop: '1px' }}>
                     {c.met ? '✓' : '✗'}
                   </span>
                   <div>
-                    <div style={{ fontFamily: ff, fontSize: '11px', fontWeight: 500, color: c.met ? '#9BA8C0' : '#6B7A9A', marginBottom: '1px' }}>{c.criterion}</div>
-                    {c.evidence && <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', fontStyle: 'italic' }}>{c.evidence}</div>}
+                    <div style={{ fontFamily: ff, fontSize: '11px', fontWeight: 500, color: c.met ? '#334155' : '#64748B', marginBottom: '1px' }}>{c.criterion}</div>
+                    {c.evidence && <div style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8', fontStyle: 'italic' }}>{c.evidence}</div>}
                   </div>
                 </div>
               ))}
@@ -258,13 +258,13 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
           )}
 
           <div style={{ display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap' }}>
-            <button onClick={handleCopy} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '8px 14px', fontSize: '12px', color: copied ? '#66BB6A' : '#ffffff', cursor: 'pointer', fontFamily: ff }}>
+            <button onClick={handleCopy} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '6px', padding: '8px 14px', fontSize: '12px', color: copied ? '#16A34A' : '#475569', cursor: 'pointer', fontFamily: ff }}>
               {copied ? '✓ Copied' : 'Copy all'}
             </button>
             <button onClick={handleExportPDF} disabled={exporting} style={{ background: exporting ? 'rgba(27,79,216,0.06)' : '#1B4FD8', border: 'none', borderRadius: '6px', padding: '8px 16px', fontSize: '12px', fontWeight: 600, color: exporting ? '#6B7A9A' : '#ffffff', cursor: exporting ? 'default' : 'pointer', fontFamily: ff }}>
               {exporting ? '⏳ Generating PDF…' : '⬇ Download PA Form (PDF)'}
             </button>
-            <button onClick={() => setActiveTab('submit')} style={{ background: 'rgba(27,79,216,0.12)', border: '1px solid rgba(27,79,216,0.25)', borderRadius: '6px', padding: '8px 14px', fontSize: '12px', color: '#7BA3FF', cursor: 'pointer', fontFamily: ff }}>
+            <button onClick={() => setActiveTab('submit')} style={{ background: '#EBF2FF', border: '1px solid #BFDBFE', borderRadius: '6px', padding: '8px 14px', fontSize: '12px', color: '#1D4ED8', cursor: 'pointer', fontFamily: ff }}>
               Log submission →
             </button>
           </div>
@@ -277,25 +277,25 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
           {/* Submission method */}
           {status === 'draft' && (
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>How are you submitting?</div>
+              <div style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>How are you submitting?</div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', marginBottom: '12px' }}>
                 {(['portal', 'fax', 'phone', 'mail'] as const).map(m => (
                   <button
                     key={m}
                     onClick={() => setSubMethod(m)}
-                    style={{ padding: '8px', borderRadius: '6px', border: `1px solid ${subMethod === m ? '#1B4FD8' : 'rgba(255,255,255,0.08)'}`, background: subMethod === m ? 'rgba(27,79,216,0.15)' : 'transparent', color: subMethod === m ? '#ffffff' : '#6B7A9A', fontFamily: ff, fontSize: '12px', fontWeight: subMethod === m ? 600 : 400, cursor: 'pointer', textTransform: 'capitalize' }}
+                    style={{ padding: '8px', borderRadius: '6px', border: `1px solid ${subMethod === m ? '#1B4FD8' : '#E2E8F0'}`, background: subMethod === m ? '#EBF2FF' : '#F8FAFC', color: subMethod === m ? '#1D4ED8' : '#64748B', fontFamily: ff, fontSize: '12px', fontWeight: subMethod === m ? 600 : 400, cursor: 'pointer', textTransform: 'capitalize' }}
                   >
                     {m === 'portal' ? '🌐 Portal' : m === 'fax' ? '📠 Fax' : m === 'phone' ? '📞 Phone' : '✉ Mail'}
                   </button>
                 ))}
               </div>
               <div style={{ marginBottom: '12px' }}>
-                <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '4px' }}>Confirmation # / Reference # (optional)</div>
+                <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '4px' }}>Confirmation # / Reference # (optional)</div>
                 <input
                   value={subConfirmation}
                   onChange={e => setSubConfirmation(e.target.value)}
                   placeholder="e.g. REF-20240411-0042"
-                  style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                  style={{ width: '100%', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#0F172A', fontFamily: ff, outline: 'none' }}
                 />
               </div>
               <button
@@ -309,31 +309,31 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
           )}
 
           {/* Auth number section */}
-          <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '16px' }}>
-            <div style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#4A5A7A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>Log approval / auth number</div>
+          <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '10px', padding: '16px' }}>
+            <div style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' }}>Log approval / auth number</div>
             <div style={{ marginBottom: '10px' }}>
-              <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '4px' }}>Authorization number *</div>
+              <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '4px' }}>Authorization number *</div>
               <input
                 value={authNumber}
                 onChange={e => setAuthNumber(e.target.value)}
                 placeholder="e.g. AUTH-2024-123456"
-                style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+                style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#0F172A', fontFamily: ff, outline: 'none' }}
               />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
               <div>
-                <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '4px' }}>Valid from</div>
-                <input type="date" value={authFrom} onChange={e => setAuthFrom(e.target.value)} style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none', colorScheme: 'dark' }} />
+                <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '4px' }}>Valid from</div>
+                <input type="date" value={authFrom} onChange={e => setAuthFrom(e.target.value)} style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 10px', fontSize: '12px', color: '#0F172A', fontFamily: ff, outline: 'none', colorScheme: 'light' }} />
               </div>
               <div>
-                <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '4px' }}>Valid through</div>
-                <input type="date" value={authThrough} onChange={e => setAuthThrough(e.target.value)} style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 10px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none', colorScheme: 'dark' }} />
+                <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '4px' }}>Valid through</div>
+                <input type="date" value={authThrough} onChange={e => setAuthThrough(e.target.value)} style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 10px', fontSize: '12px', color: '#0F172A', fontFamily: ff, outline: 'none', colorScheme: 'light' }} />
               </div>
             </div>
             <button
               onClick={handleSaveAuth}
               disabled={savingAuth || !authNumber.trim()}
-              style={{ width: '100%', background: authNumber.trim() ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${authNumber.trim() ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.08)'}`, borderRadius: '8px', padding: '10px', fontFamily: ff, fontSize: '12px', fontWeight: 600, color: authSaved ? '#4ade80' : authNumber.trim() ? '#4ade80' : '#4A5A7A', cursor: authNumber.trim() ? 'pointer' : 'default' }}
+              style={{ width: '100%', background: authNumber.trim() ? 'rgba(22,163,74,0.08)' : '#F8FAFC', border: `1px solid ${authNumber.trim() ? 'rgba(22,163,74,0.2)' : '#E2E8F0'}`, borderRadius: '8px', padding: '10px', fontFamily: ff, fontSize: '12px', fontWeight: 600, color: authSaved ? '#16A34A' : authNumber.trim() ? '#16A34A' : '#94A3B8', cursor: authNumber.trim() ? 'pointer' : 'default' }}
             >
               {savingAuth ? 'Saving...' : authSaved ? '✓ Approved & logged' : 'Save auth number & mark approved'}
             </button>
@@ -345,45 +345,45 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
       {activeTab === 'followup' && (
         <div>
           <div style={{ marginBottom: '14px' }}>
-            <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '4px' }}>Payer case / reference number</div>
+            <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '4px' }}>Payer case / reference number</div>
             <input
               value={payerCaseNumber}
               onChange={e => setPayerCaseNumber(e.target.value)}
               placeholder="Payer-assigned case number"
-              style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#ffffff', fontFamily: ff, outline: 'none' }}
+              style={{ width: '100%', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#0F172A', fontFamily: ff, outline: 'none' }}
             />
           </div>
 
           <div style={{ marginBottom: '14px' }}>
-            <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '4px' }}>Follow-up date</div>
+            <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '4px' }}>Follow-up date</div>
             <input
               type="date"
               value={followUpDate}
               onChange={e => setFollowUpDate(e.target.value)}
-              style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#ffffff', fontFamily: ff, outline: 'none', colorScheme: 'dark' }}
+              style={{ width: '100%', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#0F172A', fontFamily: ff, outline: 'none', colorScheme: 'light' }}
             />
-            <div style={{ fontFamily: ff, fontSize: '10px', color: '#4A5A7A', marginTop: '3px' }}>This PA will appear in your queue on this date</div>
+            <div style={{ fontFamily: ff, fontSize: '10px', color: '#94A3B8', marginTop: '3px' }}>This PA will appear in your queue on this date</div>
           </div>
 
           <div style={{ marginBottom: '14px' }}>
-            <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '4px' }}>Notes (call log, contact name, etc.)</div>
+            <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '4px' }}>Notes (call log, contact name, etc.)</div>
             <textarea
               value={followUpNotes}
               onChange={e => setFollowUpNotes(e.target.value)}
               placeholder="e.g. Spoke with Jane at BCBS IL, case escalated, callback expected by 4/15"
               rows={3}
-              style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#ffffff', fontFamily: ff, outline: 'none', resize: 'vertical' }}
+              style={{ width: '100%', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 12px', fontSize: '13px', color: '#0F172A', fontFamily: ff, outline: 'none', resize: 'vertical' }}
             />
           </div>
 
           {/* Denial section */}
           <div style={{ background: 'rgba(239,68,68,0.04)', border: '1px solid rgba(239,68,68,0.12)', borderRadius: '10px', padding: '14px', marginBottom: '14px' }}>
-            <div style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Log denial</div>
-            <div style={{ fontFamily: ff, fontSize: '11px', color: '#4A5A7A', marginBottom: '4px' }}>Denial code (if denied)</div>
+            <div style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#DC2626', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>Log denial</div>
+            <div style={{ fontFamily: ff, fontSize: '11px', color: '#64748B', marginBottom: '4px' }}>Denial code (if denied)</div>
             <select
               value={denialCode}
               onChange={e => setDenialCode(e.target.value)}
-              style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '7px', padding: '9px 12px', fontSize: '12px', color: '#ffffff', fontFamily: ff, outline: 'none', marginBottom: '8px' }}
+              style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '7px', padding: '9px 12px', fontSize: '12px', color: '#0F172A', fontFamily: ff, outline: 'none', marginBottom: '8px' }}
             >
               <option value="">Not denied</option>
               {DENIAL_CODES.map(c => (
@@ -398,7 +398,7 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
           </div>
 
           {/* Peer-to-peer */}
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '16px', padding: '12px 14px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' }}>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '16px', padding: '12px 14px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px' }}>
             <input
               type="checkbox"
               id="p2p"
@@ -406,7 +406,7 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
               onChange={e => setP2pRequested(e.target.checked)}
               style={{ accentColor: '#1B4FD8', width: '14px', height: '14px', cursor: 'pointer' }}
             />
-            <label htmlFor="p2p" style={{ fontFamily: ff, fontSize: '12px', color: '#8899BB', cursor: 'pointer' }}>
+            <label htmlFor="p2p" style={{ fontFamily: ff, fontSize: '12px', color: '#475569', cursor: 'pointer' }}>
               Peer-to-peer review requested — track this for follow-up
             </label>
           </div>
@@ -414,7 +414,7 @@ export default function GeneratedFormComponent({ pa, form }: GeneratedFormProps)
           <button
             onClick={handleSaveFollowUp}
             disabled={savingFollowUp}
-            style={{ width: '100%', background: 'rgba(27,79,216,0.15)', border: '1px solid rgba(27,79,216,0.3)', borderRadius: '8px', padding: '11px', fontFamily: ff, fontSize: '13px', fontWeight: 600, color: '#7BA3FF', cursor: 'pointer' }}
+            style={{ width: '100%', background: '#EBF2FF', border: '1px solid #BFDBFE', borderRadius: '8px', padding: '11px', fontFamily: ff, fontSize: '13px', fontWeight: 600, color: '#1D4ED8', cursor: 'pointer' }}
           >
             {savingFollowUp ? 'Saving...' : followUpSaved ? '✓ Saved' : 'Save follow-up info'}
           </button>
