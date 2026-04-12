@@ -19,3 +19,8 @@ export default function PrivacyPage() {
     </div>
   )
 }
+
+export const metadata = {
+  title: 'Privacy Policy | AuthFlow',
+  description: 'AuthFlow privacy policy — how we handle your data.',
+}
