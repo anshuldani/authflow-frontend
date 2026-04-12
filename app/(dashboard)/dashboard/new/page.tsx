@@ -82,8 +82,8 @@ function getChecklist(procedureCategory: string): ChecklistItem[] {
   if (cat === 'drug') {
     return [
       { label: 'Diagnosis with specificity', check: n => n.length > 20 },
-      { label: 'Prior medications tried', check: n => /(methotrexate|prior|failed|tried|inadequate|conventional|first.line)/i.test(n) },
-      { label: 'Medication duration', check: n => /\d+\s*(week|month).*(medication|drug|therapy)/i.test(n) },
+      { label: 'Prior medications tried', check: n => /(methotrexate|MTX|prior|failed|tried|inadequate|conventional|first.line|DMARD|csDMARD|hydroxychloroquine|sulfasalazine)/i.test(n) },
+      { label: 'Medication duration', check: n => /\d+\s*(week|month|mo\b|wk\b|yr\b|year)/i.test(n) },
       { label: 'Specialist involvement', check: n => /(rheumatologist|dermatologist|specialist|oncologist|physician)/i.test(n) },
       { label: 'Clinical necessity stated', check: n => /(necessary|indicated|required|biologic|refractory)/i.test(n) },
     ]
