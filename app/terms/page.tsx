@@ -19,3 +19,8 @@ export default function TermsPage() {
     </div>
   )
 }
+
+export const metadata = {
+  title: 'Terms of Service | AuthFlow',
+  description: 'AuthFlow terms of service.',
+}
