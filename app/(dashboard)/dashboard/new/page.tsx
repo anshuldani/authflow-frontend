@@ -386,12 +386,22 @@ export default function NewPAPage() {
     formData.append('file', file)
     try {
       const res = await fetch('/api/extract-card', { method: 'POST', body: formData })
-      const data = await res.json() as { success: boolean; card?: { patient_name?: string; patient_dob?: string; member_id?: string; group_number?: string; plan_name?: string } }
+      const data = await res.json() as { success: boolean; card?: { patient_name?: string; patient_dob?: string; member_id?: string; group_number?: string; plan_name?: string; payer_name?: string } }
       if (data.success && data.card) {
         if (data.card.patient_name && !patientName) setPatientName(data.card.patient_name)
         if (data.card.patient_dob && !patientDob) setPatientDob(data.card.patient_dob)
         if (data.card.member_id) setMemberId(data.card.member_id)
         if (data.card.group_number) setGroupNumber(data.card.group_number)
+        if (data.card.payer_name && !payerId) {
+          const pn = data.card.payer_name.toLowerCase()
+          if (pn.includes('blue cross') || pn.includes('bcbs') || pn.includes('bluecross')) setPayerId('bcbs_il')
+          else if (pn.includes('aetna')) setPayerId('aetna')
+          else if (pn.includes('united') || pn.includes('uhc')) setPayerId('uhc')
+          else if (pn.includes('cigna')) setPayerId('cigna')
+          else if (pn.includes('humana')) setPayerId('humana')
+          else if (pn.includes('medicare')) setPayerId('medicare')
+          else if (pn.includes('medicaid')) setPayerId('medicaid')
+        }
       }
     } catch { /* silent */ }
   }, [])

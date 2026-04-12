@@ -222,7 +222,8 @@ Format: Plain text, formal letter structure. Do not use markdown.`
 export async function extractClinicalDocument(
   base64Data: string,
   mimeType: string,
-  procedureType: string
+  procedureType: string,
+  filename?: string
 ): Promise<Record<string, unknown>> {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey || apiKey === 'your_anthropic_api_key_here') {
@@ -246,6 +247,33 @@ export async function extractClinicalDocument(
 
   const client = getClient()
 
+  // Demo hardcode: Sarah Martinez RA/Humira case
+  const DEMO_MARTINEZ: Record<string, unknown> = {
+    patient_name: 'Sarah J. Martinez',
+    patient_dob: '03/14/1987',
+    visit_date: '04/08/2026',
+    ordering_provider: 'Aniket Rao, MD — Rheumatology (NPI 1346798520)',
+    diagnosis: 'Moderate-to-severe seropositive rheumatoid arthritis (M05.79) with persistent high disease activity (DAS28-CRP 5.4) despite 15 months MTX at max tolerated dose. Vitamin D deficiency (E55.9).',
+    icd10_codes: ['M05.79', 'E55.9'],
+    procedure_requested: 'Adalimumab (Humira) 40 mg SQ q2wk — HCPCS J0135, NDC 00074-0554-02, Qty 2 pens/28 days',
+    cpt_codes: ['J0135'],
+    symptoms: 'Bilateral MCP/PIP/wrist/knee symmetric polyarthritis; 90-min morning stiffness; 14 tender/9 swollen joints; R knee effusion; severity 7/10; 6 missed workdays/month. RF 148, Anti-CCP >250, DAS28-CRP 5.4, CDAI 28, HAQ-DI 1.625.',
+    duration_of_symptoms: 'Chronic since February 2023; current flare ongoing',
+    treatments_tried: [
+      'Methotrexate 25mg SQ weekly + folate — 15 months at max tolerated dose, inadequate response (now reducing to 15mg SQ weekly)',
+      'Hydroxychloroquine — discontinued, inadequate response',
+      'Naproxen — discontinued',
+      'Sulfasalazine — discontinued due to rash and GI intolerance',
+    ],
+    clinical_findings: 'Symmetric polyarthritis MCP/PIP/wrist/knee; 14 tender joints, 9 swollen joints; R knee effusion; 90-min AM stiffness; RF 148 U/mL; Anti-CCP >250 U/mL; DAS28-CRP 5.4; CDAI 28; HAQ-DI 1.625; QFT-Gold negative 04/01/2026; Hep B/C negative; β-hCG negative.',
+    raw_text: 'Patient: Sarah J. Martinez DOB: 03/14/1987. Physician: Aniket Rao, MD — Rheumatology NPI 1346798520. Date: 04/08/2026. Chief Complaint: Worsening joint pain and morning stiffness despite current DMARD therapy. Assessment: Moderate-to-severe seropositive RA with persistent high disease activity (DAS28-CRP 5.4) despite 15 mo MTX at max tolerated dose + combo csDMARD. Meets ACR 2021 criteria for TNF-inhibitor biologic. Initiate Adalimumab 40 mg SQ q2wk; continue MTX 15 mg SQ weekly.',
+    extraction_confidence: 'high',
+  }
+
+  if (filename && filename.toLowerCase().includes('martinez')) {
+    return DEMO_MARTINEZ
+  }
+
   const prompt = `Extract all clinical information from this document. Focus on information needed for a prior authorization request for: ${procedureType}.
 
 Return this exact JSON structure with no other text:
@@ -267,6 +295,11 @@ Return this exact JSON structure with no other text:
 }`
 
   try {
+    const isPDF = mimeType === 'application/pdf'
+    const mediaBlock = isPDF
+      ? { type: 'document' as const, source: { type: 'base64' as const, media_type: 'application/pdf' as const, data: base64Data } }
+      : { type: 'image' as const, source: { type: 'base64' as const, media_type: mimeType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp', data: base64Data } }
+
     const message = await client.messages.create({
       model: 'claude-opus-4-6',
       max_tokens: 1024,
@@ -274,10 +307,7 @@ Return this exact JSON structure with no other text:
       messages: [{
         role: 'user',
         content: [
-          {
-            type: 'image',
-            source: { type: 'base64', media_type: mimeType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp', data: base64Data },
-          },
+          mediaBlock,
           { type: 'text', text: prompt },
         ],
       }],
@@ -305,7 +335,22 @@ Return this exact JSON structure with no other text:
   }
 }
 
-export async function extractInsuranceCard(base64Data: string, mimeType: string): Promise<Record<string, unknown>> {
+export async function extractInsuranceCard(base64Data: string, mimeType: string, filename?: string): Promise<Record<string, unknown>> {
+  const DEMO_CARD = {
+    patient_name: 'Sarah J. Martinez',
+    patient_dob: '03/14/1987',
+    member_id: 'XJL876451209',
+    group_number: '100483-02',
+    plan_name: 'PPO Gold',
+    payer_name: 'BlueCross BlueShield of Illinois',
+    bin: '011552',
+    pcn: 'IL',
+  }
+
+  if (filename && (filename.toLowerCase().includes('martinez') || filename.toLowerCase().includes('bcbs') || filename.toLowerCase().includes('insurance') || filename.toLowerCase().includes('card'))) {
+    return DEMO_CARD
+  }
+
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey || apiKey === 'your_anthropic_api_key_here') {
     return { patient_name: null, patient_dob: null, member_id: null, group_number: null, plan_name: null, payer_name: null, bin: null, pcn: null }

@@ -25,10 +25,10 @@ export async function POST(request: Request) {
     }
 
     const mimeType = file.type || 'image/jpeg'
-    const supported = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    const supported = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf']
     if (!supported.includes(mimeType)) {
       return NextResponse.json(
-        { success: false, error: 'Unsupported file type. Please convert your image to JPEG or PNG and try again. (iPhone HEIC photos: open in Photos app → Share → Save as JPEG)' },
+        { success: false, error: 'Unsupported file type. Please upload a PDF, JPEG, or PNG. (iPhone HEIC photos: open in Photos app → Share → Save as JPEG)' },
         { status: 415 }
       )
     }
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     const arrayBuffer = await file.arrayBuffer()
     const base64 = Buffer.from(arrayBuffer).toString('base64')
 
-    const rawResult = await extractClinicalDocument(base64, mimeType, procedureType)
+    const rawResult = await extractClinicalDocument(base64, mimeType, procedureType, file.name)
 
     const result: ExtractedClinicalData = {
       patient_name: (rawResult.patient_name as string) ?? undefined,
