@@ -19,3 +19,8 @@ export default function SecurityPage() {
     </div>
   )
 }
+
+export const metadata = {
+  title: 'Security | AuthFlow',
+  description: 'How AuthFlow secures your clinical data and protects PHI.',
+}
