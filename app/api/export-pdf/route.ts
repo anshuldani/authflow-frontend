@@ -257,3 +257,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'PDF export failed' }, { status: 503 })
   }
 }
+
+export const dynamic = 'force-dynamic'
+export const maxDuration = 60
