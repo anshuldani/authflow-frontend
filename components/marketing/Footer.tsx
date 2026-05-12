@@ -1,29 +1,109 @@
-import Link from 'next/link';
+'use client'
 
-const FOOTER_LINKS = [
-  { label: 'Privacy', href: '/privacy' },
-  { label: 'Terms', href: '/terms' },
-  { label: 'Security', href: '/security' },
-  { label: 'Contact', href: 'mailto:hello@authflow.ai' },
-];
+const COL_LINKS: { heading: string; links: string[]; extra?: { heading: string; links: string[] } }[] = [
+  {
+    heading: 'Home page',
+    links: ['How it works', 'Letters', 'Transcribe', 'Practices', 'Testimonials', 'Safety', 'Pricing', 'Devices'],
+  },
+  {
+    heading: 'Navigation',
+    links: ['Transcribe', 'Letters', 'Blog', 'Pricing'],
+  },
+  {
+    heading: 'Use Cases',
+    links: ['Doctors', 'Specialists', 'Allied Health', 'Psychologists', 'General Practitioners', 'Medical Practices'],
+  },
+  {
+    heading: 'Socials',
+    links: ['LinkedIn'],
+    extra: { heading: 'Legal', links: ['Privacy Policy', 'Terms of use'] },
+  },
+]
+
+const linkStyle: React.CSSProperties = {
+  display: 'block',
+  color: '#64748b',
+  fontSize: '0.875rem',
+  marginBottom: 10,
+  cursor: 'pointer',
+  transition: 'color 0.15s',
+  textDecoration: 'none',
+}
 
 export default function Footer() {
   return (
-    <footer style={{ background: '#060810', borderTop: '1px solid rgba(255,255,255,0.04)', padding: '28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-      <div>
-        <Link href="/" style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontWeight: 700, fontSize: '17px', color: '#ffffff', textDecoration: 'none', display: 'block' }}>Authflow.</Link>
-        <div style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', color: '#2A3550', marginTop: '3px' }}>Built in Chicago · 2026</div>
-      </div>
+    <footer style={{
+      background: 'rgba(255,255,255,0.6)',
+      borderTop: '1px solid rgba(59,130,246,0.1)',
+      backdropFilter: 'blur(20px)',
+      padding: '60px 40px 32px',
+      fontFamily: 'var(--font-inter)',
+    }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'auto repeat(4, 1fr)',
+          gap: 48,
+          marginBottom: 40,
+        }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+              <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#3b82f6' }} />
+              <span style={{ fontWeight: 700, color: '#0f172a', fontSize: '1rem' }}>AuthFlow</span>
+            </div>
+          </div>
 
-      <div style={{ display: 'flex', gap: '20px' }}>
-        {FOOTER_LINKS.map(link => (
-          <a key={link.label} href={link.href} style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', color: '#2A3550', textDecoration: 'none' }}>{link.label}</a>
-        ))}
-      </div>
+          {COL_LINKS.map(col => (
+            <div key={col.heading}>
+              <p style={{ color: '#0f172a', fontWeight: 600, fontSize: '0.875rem', marginBottom: 16 }}>
+                {col.heading}
+              </p>
+              {col.links.map(link => (
+                <a
+                  key={link}
+                  href="#"
+                  style={linkStyle}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#1d4ed8')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
+                >
+                  {link}
+                </a>
+              ))}
+              {col.extra && (
+                <>
+                  <p style={{ color: '#0f172a', fontWeight: 600, fontSize: '0.875rem', marginTop: 24, marginBottom: 16 }}>
+                    {col.extra.heading}
+                  </p>
+                  {col.extra.links.map(link => (
+                    <a
+                      key={link}
+                      href="#"
+                      style={linkStyle}
+                      onMouseEnter={e => (e.currentTarget.style.color = '#0f172a')}
+                      onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
+                    >
+                      {link}
+                    </a>
+                  ))}
+                </>
+              )}
+            </div>
+          ))}
+        </div>
 
-      <div style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', color: '#1A2540' }}>
-        © 2026 Authflow. All rights reserved.
+        <div style={{
+          borderTop: '1px solid rgba(59,130,246,0.08)',
+          paddingTop: 24,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 8,
+        }}>
+          <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>© 2026 AuthFlow. All rights reserved.</span>
+          <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>Built for medical practices everywhere.</span>
+        </div>
       </div>
     </footer>
-  );
+  )
 }

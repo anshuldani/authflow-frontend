@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { generatePriorAuth } from '@/lib/gemini'
 import { generatePriorAuthViaBackend, isBackendAvailable } from '@/lib/backend-client'
 import { PAYERS } from '@/lib/types'
-import type { GeneratedForm, PatientInfo, CompletePAForm, PracticeProfile, DrugPAInfo } from '@/lib/types'
+import type { GeneratedForm, PatientInfo, CompletePAForm, PracticeProfile, DrugPAInfo, ExtractedClinicalData } from '@/lib/types'
 
 interface GenerateRequestBody {
   clinicalNote?: string
@@ -13,6 +13,7 @@ interface GenerateRequestBody {
   patientInfo?: PatientInfo
   urgency?: string
   drugPAInfo?: DrugPAInfo
+  extractedData?: ExtractedClinicalData
 }
 
 export async function POST(request: Request) {
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json() as GenerateRequestBody
-    const { clinicalNote, payerId, procedureName, procedureCategory, patientInfo, urgency, drugPAInfo } = body
+    const { clinicalNote, payerId, procedureName, procedureCategory, patientInfo, urgency, drugPAInfo, extractedData } = body
 
     if (!clinicalNote || clinicalNote.trim().length < 40) {
       return NextResponse.json({ success: false, error: 'Clinical note must be at least 40 characters' }, { status: 400 })
@@ -36,13 +37,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Procedure name is required' }, { status: 400 })
     }
 
-    // Check quota
-    const { data: userData, error: userError } = await supabase
+    // Check quota — use maybeSingle so a missing users row (trigger not installed) doesn't 503
+    const { data: userRow } = await supabase
       .from('users')
       .select('plan, pa_count_this_month, pa_quota')
       .eq('id', user.id)
-      .single()
-    if (userError) throw userError
+      .maybeSingle()
+
+    const userData = userRow ?? { plan: 'free' as const, pa_count_this_month: 0, pa_quota: 10 }
 
     if (
       userData.plan === 'free' &&
@@ -177,6 +179,8 @@ export async function POST(request: Request) {
       patient_group_number: patientInfo?.patient_group_number ?? null,
       patient_plan_name: patientInfo?.patient_plan_name ?? null,
       urgency: urgency ?? 'routine',
+      drug_pa_info: drugPAInfo ?? null,
+      extracted_clinical_data: extractedData ?? null,
     }
 
     let result = await tryInsert(fullPayload)
@@ -190,10 +194,13 @@ export async function POST(request: Request) {
 
     if (insertError) throw insertError
 
-    await supabase
-      .from('users')
-      .update({ pa_count_this_month: userData.pa_count_this_month + 1 })
-      .eq('id', user.id)
+    // Only increment if the row actually exists (otherwise update is a no-op anyway)
+    if (userRow) {
+      await supabase
+        .from('users')
+        .update({ pa_count_this_month: userData.pa_count_this_month + 1 })
+        .eq('id', user.id)
+    }
 
     return NextResponse.json({ success: true, pa, completePAForm })
   } catch (err) {

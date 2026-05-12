@@ -1,246 +1,232 @@
-'use client';
+'use client'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { useRouter } from 'next/navigation'
+import { FileText, ScanLine } from 'lucide-react'
 
-import { useEffect, useRef, useState } from 'react';
-import { useIntersection } from '@/hooks/useIntersection';
+const HEADLINE_WORDS = ['Patients,', 'not', 'paperwork']
 
-const CLINICAL_NOTE =
-  'Patient: 52F, 6 weeks progressive lower back pain radiating to left leg. Failed NSAIDs and PT ×4 weeks. Decreased sensation L4-L5 dermatome. Assessment: lumbar radiculopathy, suspected herniated disc. Plan: CT myelogram lumbar spine.';
+const cardStyle: React.CSSProperties = {
+  background: 'rgba(255,255,255,0.85)',
+  border: '1px solid rgba(59,130,246,0.15)',
+  borderRadius: 16,
+  padding: 20,
+  backdropFilter: 'blur(20px)',
+  boxShadow: '0 20px 60px rgba(59,130,246,0.12), 0 4px 16px rgba(0,0,0,0.06)',
+  width: 280,
+  position: 'relative',
+  overflow: 'hidden',
+}
 
 export default function Hero() {
-  const [sectionRef, sectionVisible] = useIntersection(0.1);
-  const [typed, setTyped] = useState('');
-  const [typing, setTyping] = useState(false);
-  const [formVisible, setFormVisible] = useState(false);
-  const [cardVisible, setCardVisible] = useState(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    if (!sectionVisible) return;
-    const cardTimer = setTimeout(() => setCardVisible(true), 400);
-    const startTimer = setTimeout(() => {
-      setTyping(true);
-      let i = 0;
-      intervalRef.current = setInterval(() => {
-        i++;
-        setTyped(CLINICAL_NOTE.slice(0, i));
-        if (i >= CLINICAL_NOTE.length) {
-          if (intervalRef.current) clearInterval(intervalRef.current);
-          setTyping(false);
-          setTimeout(() => setFormVisible(true), 500);
-        }
-      }, 24);
-    }, 1000);
-
-    return () => {
-      clearTimeout(cardTimer);
-      clearTimeout(startTimer);
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [sectionVisible]);
-
-  // suppress unused variable warning
-  void cardVisible;
+  const router = useRouter()
+  const { scrollY } = useScroll()
+  const heroY = useTransform(scrollY, [0, 500], [0, -80])
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0])
 
   return (
-    <section
-      ref={sectionRef}
-      style={{
-        background: '#0B0F1A',
-        position: 'relative',
-        overflow: 'hidden',
-        paddingTop: '80px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-      }}
-    >
-      <div
-        style={{
+    <section style={{
+      minHeight: '100vh',
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      textAlign: 'center', padding: '120px 24px 80px',
+      position: 'relative', overflow: 'hidden',
+      fontFamily: 'var(--font-inter)',
+    }}>
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+        <div style={{
           position: 'absolute',
-          top: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '700px',
-          height: '350px',
-          background: 'radial-gradient(ellipse at center top, rgba(27,79,216,0.20) 0%, transparent 68%)',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
+          top: '10%', left: '50%',
+          width: 900, height: 500,
+          background: 'radial-gradient(ellipse, rgba(147,197,253,0.4) 0%, rgba(196,181,253,0.2) 40%, transparent 70%)',
+          filter: 'blur(60px)',
+          animation: 'blob-move 8s ease-in-out infinite',
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '5%', right: '10%',
+          width: 600, height: 400,
+          background: 'radial-gradient(ellipse, rgba(196,181,253,0.35) 0%, rgba(147,197,253,0.15) 50%, transparent 70%)',
+          filter: 'blur(60px)',
+          animation: 'blob-move-reverse 10s ease-in-out infinite',
+        }} />
+      </div>
 
-      <div style={{ position: 'relative', zIndex: 1, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div
-          className={`fade-up${sectionVisible ? ' visible' : ''}`}
-          style={{
-            transitionDelay: '0ms',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'rgba(27,79,216,0.14)',
-            border: '1px solid rgba(27,79,216,0.32)',
-            borderRadius: '99px',
-            padding: '6px 14px',
-            marginBottom: '28px',
-          }}
-        >
-          <span
-            className="pulse-dot"
-            style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#1B4FD8', flexShrink: 0 }}
-          />
-          <a href="/waitlist" style={{ fontFamily: 'var(--font-inter)', fontSize: '12px', fontWeight: 500, color: '#7BA3FF', textDecoration: 'none' }}>
-            Now in beta — join the waitlist
-          </a>
-        </div>
-
-        <h1
-          className={`fade-up${sectionVisible ? ' visible' : ''}`}
-          style={{
-            transitionDelay: '100ms',
-            fontFamily: 'var(--font-playfair), Georgia, serif',
-            fontWeight: 800,
-            fontSize: '72px',
-            color: '#ffffff',
-            letterSpacing: '-2.5px',
-            lineHeight: 1.04,
-            marginBottom: '24px',
-            maxWidth: '720px',
-          }}
-        >
-          Prior auth.<br />Done in 30 seconds.
-        </h1>
-
-        <p
-          className={`fade-up${sectionVisible ? ' visible' : ''}`}
-          style={{
-            transitionDelay: '200ms',
-            fontFamily: 'var(--font-inter)',
-            fontWeight: 400,
-            fontSize: '17px',
-            color: '#5A6A8A',
-            lineHeight: 1.6,
-            maxWidth: '440px',
-            marginBottom: '36px',
-          }}
-        >
-          Stop spending 35 minutes per request on the phone with insurance. Paste a note. Pick a payer. Get a completed form.
-        </p>
-
-        <div
-          className={`fade-up${sectionVisible ? ' visible' : ''}`}
-          style={{ transitionDelay: '300ms', display: 'flex', gap: '12px', marginBottom: '56px' }}
-        >
-          <a
-            href="/signup"
-            style={{
-              fontFamily: 'var(--font-inter)',
-              fontWeight: 500,
-              fontSize: '14px',
-              color: '#ffffff',
-              background: '#1B4FD8',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '13px 28px',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              transition: 'background 0.2s',
-              display: 'inline-block',
-            }}
-            onMouseEnter={e => (e.currentTarget.style.background = '#3D6AE8')}
-            onMouseLeave={e => (e.currentTarget.style.background = '#1B4FD8')}
+      <motion.div
+        style={{ y: heroY, opacity: heroOpacity, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 1 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            Start free — no card needed
-          </a>
-          <a
-            href="#how-it-works"
-            onClick={e => { e.preventDefault(); document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }); }}
-            style={{
-              fontFamily: 'var(--font-inter)',
-              fontWeight: 500,
-              fontSize: '14px',
-              color: '#7BA3FF',
-              background: 'transparent',
-              border: '1px solid rgba(255,255,255,0.10)',
-              borderRadius: '8px',
-              padding: '13px 28px',
-              cursor: 'pointer',
-              textDecoration: 'none',
-              display: 'inline-block',
-            }}
-          >
-            See how it works ↓
-          </a>
-        </div>
-
-        <div
-          className={`fade-up${sectionVisible ? ' visible' : ''}`}
-          style={{ transitionDelay: '400ms', width: '100%', maxWidth: '740px', margin: '0 auto' }}
-        >
-          <div
-            style={{
-              background: '#111827',
-              border: '1px solid rgba(255,255,255,0.09)',
-              borderBottom: 'none',
-              borderRadius: '14px 14px 0 0',
-              overflow: 'hidden',
-            }}
-          >
-            <div style={{ background: '#0B0F1A', padding: '10px 16px', display: 'flex', alignItems: 'center', position: 'relative' }}>
-              <div style={{ display: 'flex', gap: '6px' }}>
-                <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#FF5F57', display: 'block' }} />
-                <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#FEBC2E', display: 'block' }} />
-                <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#28C840', display: 'block' }} />
-              </div>
-              <span style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontFamily: 'var(--font-inter)', fontSize: '11px', color: '#2D3A4A' }}>
-                app.authflow.ai
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '6px 16px', borderRadius: 999,
+              border: '1px solid rgba(59,130,246,0.2)',
+              background: 'rgba(59,130,246,0.08)',
+              marginBottom: 32,
+            }}>
+              <span style={{
+                width: 7, height: 7, borderRadius: '50%',
+                background: '#10b981', flexShrink: 0,
+                animation: 'pulse-dot 2s infinite',
+              }} />
+              <span style={{ color: '#1d4ed8', fontSize: '0.75rem', fontWeight: 500, letterSpacing: '0.12em' }}>
+                Live Beta &nbsp;·&nbsp; AI-Powered Prior Authorization
               </span>
             </div>
+          </motion.div>
 
-            <div style={{ display: 'flex' }}>
-              <div style={{ flex: 1, background: '#0F1420', padding: '16px', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
-                <div style={{ fontFamily: 'var(--font-inter)', fontSize: '9px', color: '#2D3A4A', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>
-                  Clinical note
-                </div>
-                <div style={{ fontFamily: 'monospace', fontSize: '10px', color: '#4A5A6A', lineHeight: 1.6, minHeight: '80px', marginBottom: '12px', wordBreak: 'break-word' }}>
-                  {typed}
-                  {typing && (
-                    <span
-                      className="blink-cursor"
-                      style={{ display: 'inline-block', width: '1px', height: '11px', background: '#1B4FD8', verticalAlign: 'text-bottom', marginLeft: '1px' }}
-                    />
-                  )}
-                </div>
-                <div style={{ background: 'rgba(27,79,216,0.14)', border: '1px solid rgba(27,79,216,0.28)', borderRadius: '6px', padding: '6px 10px', fontFamily: 'var(--font-inter)', fontSize: '10px', color: '#7BA3FF', marginBottom: '10px' }}>
-                  Blue Cross Illinois ▾
-                </div>
-                <button style={{ width: '100%', background: '#1B4FD8', border: 'none', borderRadius: '6px', padding: '7px', fontFamily: 'var(--font-inter)', fontSize: '10px', fontWeight: 700, color: '#ffffff', cursor: 'pointer' }}>
-                  Generate prior auth →
-                </button>
+          <h1 style={{
+            fontSize: 'clamp(3rem, 7vw, 5.5rem)',
+            fontWeight: 800, letterSpacing: '-0.04em',
+            lineHeight: 1.08, color: '#0f172a',
+            marginBottom: 24,
+          }}>
+            {HEADLINE_WORDS.map((word, i) => (
+              <motion.span
+                key={word}
+                initial={{ opacity: 0, y: 40, filter: 'blur(8px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 0.7, delay: 0.1 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                style={{
+                  display: 'inline-block',
+                  marginRight: '0.25em',
+                  ...(word === 'paperwork' ? {
+                    background: 'linear-gradient(135deg, #60a5fa, #a78bfa, #60a5fa)',
+                    backgroundSize: '200% 200%',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    animation: 'gradient-shift 3s ease infinite',
+                  } : {}),
+                }}
+              >
+                {word}
+              </motion.span>
+            ))}
+          </h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            style={{ color: '#475569', fontSize: '1.125rem', maxWidth: 540, margin: '0 auto', lineHeight: 1.75 }}
+          >
+            Turn clinical notes and insurance cards into submission-ready prior
+            authorization forms — in under 30 seconds.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.62, ease: [0.16, 1, 0.3, 1] }}
+            style={{ color: '#64748b', fontSize: '0.9rem', maxWidth: 500, margin: '0.75rem auto 2rem', lineHeight: 1.7 }}
+          >
+            Snap a photo of clinical notes and the insurance card. AuthFlow extracts
+            the right details, maps the right codes, and drafts the PA with the
+            language insurers expect — so your claims are faster, cleaner, and less
+            likely to be rejected.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.74, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.button
+              onClick={() => router.push('/signin')}
+              aria-label="Sign up for AuthFlow — free to start"
+              whileHover={{ scale: 1.04, boxShadow: '0 0 30px rgba(37,99,235,0.5), 0 12px 40px rgba(37,99,235,0.4)', y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              style={{
+                background: '#2563eb', color: 'white',
+                padding: '16px 40px', borderRadius: 12,
+                fontSize: '1rem', fontWeight: 700, border: 'none', cursor: 'pointer',
+                boxShadow: '0 0 0 1px rgba(37,99,235,0.5), 0 8px 32px rgba(37,99,235,0.3)',
+                fontFamily: 'var(--font-inter)',
+              }}
+            >
+              Sign up for free
+            </motion.button>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.95 }}
+            style={{ color: '#94a3b8', fontSize: '0.78rem', marginTop: 16, letterSpacing: '0.04em' }}
+          >
+            Used by doctors at Mayo Clinic · Kaiser Permanente · and more
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.86, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              display: 'flex', gap: 16, justifyContent: 'center',
+              marginTop: 48, flexWrap: 'wrap', alignItems: 'center',
+            }}
+          >
+            <motion.div
+              animate={{ y: [0, -14, 0], rotate: [-0.5, 0.5, -0.5] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              style={cardStyle}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                <FileText size={18} color="#3b82f6" />
+                <span style={{ color: '#0f172a', fontWeight: 600, fontSize: '0.9rem' }}>Clinical Notes</span>
               </div>
+              <p style={{ color: '#64748b', fontSize: '0.8rem', lineHeight: 1.65, textAlign: 'left' }}>
+                Pt presents with chronic lower back pain. MRI reveals L4-L5 disc
+                herniation. Conservative treatment failed over 6 months...
+              </p>
+              <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', borderRadius: 16, pointerEvents: 'none' }}>
+                <div style={{
+                  position: 'absolute', top: 0, left: '-100%',
+                  height: '100%', width: '60%',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                  animation: 'card-shimmer 3s ease-in-out infinite',
+                }} />
+              </div>
+            </motion.div>
 
-              <div style={{ flex: 1, background: '#0B1020', padding: '16px', opacity: formVisible ? 1 : 0, transition: 'opacity 0.6s ease' }}>
-                <div style={{ fontFamily: 'var(--font-inter)', fontSize: '9px', color: '#2D3A4A', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '14px' }}>
-                  Generated form
-                </div>
+            <div style={{ color: '#3b82f6', fontSize: '1.75rem', display: 'flex', alignItems: 'center' }}>→</div>
+
+            <motion.div
+              animate={{ y: [0, -14, 0], rotate: [0.5, -0.5, 0.5] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
+              style={cardStyle}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                <ScanLine size={18} color="#3b82f6" />
+                <span style={{ color: '#0f172a', fontWeight: 600, fontSize: '0.9rem' }}>PA Draft</span>
+              </div>
+              <p style={{ color: '#64748b', fontSize: '0.75rem', marginBottom: 14 }}>Prior Authorization Request</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'left' }}>
                 {[
-                  { label: 'Diagnosis', text: 'Lumbar radiculopathy with suspected herniated disc at L4-L5', cite: 'Blue Cross IL §4.1 — Diagnostic criteria met' },
-                  { label: 'Clinical justification', text: '6 weeks conservative treatment failed. NSAIDs and PT documented. Neurological deficit confirmed.', cite: 'Policy §4.2.3 — Conservative treatment threshold satisfied' },
-                  { label: 'Medical necessity', text: 'CT myelogram required for surgical planning and definitive diagnosis.', cite: 'Blue Cross IL §4.2 — Imaging criteria met' },
-                ].map(item => (
-                  <div key={item.label} style={{ marginBottom: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px' }}>
-                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#1B4FD8', flexShrink: 0 }} />
-                      <span style={{ fontFamily: 'var(--font-inter)', fontSize: '9px', fontWeight: 700, color: '#1B4FD8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{item.label}</span>
-                    </div>
-                    <div style={{ fontFamily: 'var(--font-inter)', fontSize: '10px', color: '#6B7A9A', lineHeight: 1.5, paddingLeft: '12px', marginBottom: '2px' }}>{item.text}</div>
-                    <div style={{ fontFamily: 'var(--font-inter)', fontSize: '9px', color: '#2D3A4A', fontStyle: 'italic', paddingLeft: '12px' }}>{item.cite}</div>
-                  </div>
+                  'Patient: John D. — DOB: 03/15/1978',
+                  'Diagnosis: M51.16 — Lumbar disc herniation',
+                  'Requested: Epidural steroid injection series',
+                ].map(line => (
+                  <p key={line} style={{ color: '#475569', fontSize: '0.78rem' }}>{line}</p>
                 ))}
               </div>
-            </div>
-          </div>
+              <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', borderRadius: 16, pointerEvents: 'none' }}>
+                <div style={{
+                  position: 'absolute', top: 0, left: '-100%',
+                  height: '100%', width: '60%',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                  animation: 'card-shimmer 3s ease-in-out infinite',
+                  animationDelay: '1.5s',
+                }} />
+              </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
-  );
+  )
 }

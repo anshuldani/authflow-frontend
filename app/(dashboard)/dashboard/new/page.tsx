@@ -160,6 +160,9 @@ export default function NewPAPage() {
   const [renderingProvider, setRenderingProvider] = useState('')
   const [renderingFacility, setRenderingFacility] = useState('')
 
+  // Drug PAs — prescriber section (required for drug PAs, default open)
+  const [prescriberExpanded, setPrescriberExpanded] = useState(true)
+
   // Center panel — note
   const [noteTab, setNoteTab] = useState<'type' | 'upload'>('type')
   const [note, setNote] = useState('')
@@ -179,6 +182,7 @@ export default function NewPAPage() {
   const [authNumber, setAuthNumber] = useState('')
   const [savingAuth, setSavingAuth] = useState(false)
   const [authSaved, setAuthSaved] = useState(false)
+  const [persistError, setPersistError] = useState('')
 
   // User plan info (for quota)
   const [userPlan, setUserPlan] = useState<{ plan: string; pa_count_this_month: number; pa_quota: number | null } | null>(null)
@@ -335,6 +339,7 @@ export default function NewPAPage() {
           procedureCategory,
           urgency,
           drugPAInfo: drugInfo,
+          extractedData: extraction ?? undefined,
           patientInfo: {
             patient_name: patientName,
             patient_dob: patientDob,
@@ -356,6 +361,18 @@ export default function NewPAPage() {
       }
       setResult({ pa: data.pa, form: data.completePAForm })
       setLoadingPhase('done')
+
+      // Refresh quota counter so the client-side isAtQuota check stays accurate
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: refreshed } = await supabase
+          .from('users')
+          .select('plan, pa_count_this_month, pa_quota')
+          .eq('id', user.id)
+          .maybeSingle()
+        if (refreshed) setUserPlan(refreshed)
+      }
     } catch {
       setError('Something went wrong. Please try again.')
       setLoadingPhase('error')
@@ -396,13 +413,13 @@ export default function NewPAPage() {
         if (data.card.group_number) setGroupNumber(data.card.group_number)
         if (data.card.payer_name && !payerId) {
           const pn = data.card.payer_name.toLowerCase()
+          // Only set IDs that exist in PAYERS — generate would 400 on unknown payer.
+          // Medicare/Medicaid intentionally omitted (not yet supported server-side).
           if (pn.includes('blue cross') || pn.includes('bcbs') || pn.includes('bluecross')) setPayerId('bcbs_il')
           else if (pn.includes('aetna')) setPayerId('aetna')
           else if (pn.includes('united') || pn.includes('uhc')) setPayerId('uhc')
           else if (pn.includes('cigna')) setPayerId('cigna')
           else if (pn.includes('humana')) setPayerId('humana')
-          else if (pn.includes('medicare')) setPayerId('medicare')
-          else if (pn.includes('medicaid')) setPayerId('medicaid')
         }
       }
     } catch { /* silent */ }
@@ -417,17 +434,33 @@ export default function NewPAPage() {
 
   const handleMarkSubmitted = async () => {
     if (!result) return
+    setPersistError('')
     const supabase = createClient()
-    await supabase.from('prior_auths').update({ status: 'submitted', submitted_at: new Date().toISOString() }).eq('id', result.pa.id)
-    setResult(prev => prev ? { ...prev, pa: { ...prev.pa, status: 'submitted' } } : prev)
+    const { error: updateError } = await supabase
+      .from('prior_auths')
+      .update({ status: 'submitted', submitted_at: new Date().toISOString() })
+      .eq('id', result.pa.id)
+    if (updateError) {
+      setPersistError(`Couldn't mark as submitted: ${updateError.message}`)
+      return
+    }
+    setResult(prev => prev ? { ...prev, pa: { ...prev.pa, status: 'submitted', submitted_at: new Date().toISOString() } } : prev)
   }
 
   const handleSaveAuth = async () => {
     if (!result || !authNumber.trim()) return
     setSavingAuth(true)
+    setPersistError('')
     const supabase = createClient()
-    await supabase.from('prior_auths').update({ auth_number: authNumber }).eq('id', result.pa.id)
+    const { error: updateError } = await supabase
+      .from('prior_auths')
+      .update({ auth_number: authNumber })
+      .eq('id', result.pa.id)
     setSavingAuth(false)
+    if (updateError) {
+      setPersistError(`Couldn't save auth number: ${updateError.message}`)
+      return
+    }
     setAuthSaved(true)
   }
 
@@ -801,13 +834,13 @@ ${f.policy_sections_cited.join(' · ')}`
 
               {divider()}
               <button
-                onClick={() => setRenderingExpanded(v => !v)}
+                onClick={() => setPrescriberExpanded(v => !v)}
                 style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', width: '100%', textAlign: 'left' }}
               >
                 <span style={{ fontFamily: ff, fontSize: '11px', fontWeight: 700, color: '#1D4ED8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Prescriber info *</span>
-                <span style={{ color: '#94A3B8', fontSize: '10px', marginLeft: 'auto' }}>{renderingExpanded ? '▲' : '▼'}</span>
+                <span style={{ color: '#94A3B8', fontSize: '10px', marginLeft: 'auto' }}>{prescriberExpanded ? '▲' : '▼'}</span>
               </button>
-              {renderingExpanded && (
+              {prescriberExpanded && (
                 <>
                   {sLabel('Prescriber name')}
                   {fieldInput(prescriberName, setPrescriberName, 'Dr. Jane Smith, MD')}
@@ -1196,6 +1229,10 @@ ${f.policy_sections_cited.join(' · ')}`
                     </div>
                   )}
                 </div>
+
+                {persistError && (
+                  <div style={{ fontFamily: ff, fontSize: '11px', color: '#EF5350', marginBottom: '8px' }}>{persistError}</div>
+                )}
 
                 {/* Auth number input — show after submitted */}
                 {isSubmitted && (

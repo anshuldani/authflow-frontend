@@ -97,6 +97,12 @@ input:focus, textarea:focus, select:focus {
 @keyframes skeleton-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
+@keyframes gradient-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes blob-move { 0%, 100% { transform: translateX(-50%) translateY(0px) scale(1); } 33% { transform: translateX(-45%) translateY(-20px) scale(1.05); } 66% { transform: translateX(-55%) translateY(10px) scale(0.95); } }
+@keyframes blob-move-reverse { 0%, 100% { transform: translateY(0px) scale(1) rotate(0deg); } 33% { transform: translateY(15px) scale(1.08) rotate(5deg); } 66% { transform: translateY(-10px) scale(0.94) rotate(-3deg); } }
+@keyframes card-shimmer { 0% { left: -100%; } 50%, 100% { left: 200%; } }
+@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
+
 .pulse-dot { animation: pulse-dot 2s infinite; }
 .blink-cursor { animation: blink-cursor 1s infinite; }
 .skeleton { animation: skeleton-pulse 1.5s ease-in-out infinite; background: #E2E8F0 !important; border-radius: 6px; }
