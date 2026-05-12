@@ -93,6 +93,3 @@ export default function SignupPage() {
   )
 }
 
-export const metadata = {
-  title: 'Create Account | AuthFlow',
-}

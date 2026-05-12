@@ -97,7 +97,3 @@ export default function SigninPage() {
   )
 }
 
-// Sign-in page metadata
-export const metadata = {
-  title: 'Sign In | AuthFlow',
-}

@@ -359,6 +359,3 @@ export default function SettingsPage() {
   )
 }
 
-export const metadata = {
-  title: 'Settings | AuthFlow',
-}

@@ -215,8 +215,3 @@ export default function WaitlistPage() {
   )
 }
 
-// Waitlist page — SEO metadata
-export const metadata = {
-  title: 'Join the Waitlist | AuthFlow',
-  description: 'Be the first to access AuthFlow — AI-powered prior authorization, simplified.',
-}
